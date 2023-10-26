@@ -7,7 +7,7 @@ import { privateKeyToAccount } from 'viem/accounts'
 import { generatePrivateKey } from 'viem/accounts'
 import {
   constructZupassPcdGetRequestUrl,
-} from "@pcd/passport-interface/src/PassportInterface";
+} from "@pcd/passport-interface";
 import {
   ZKEdDSAEventTicketPCDArgs,
   ZKEdDSAEventTicketPCDPackage

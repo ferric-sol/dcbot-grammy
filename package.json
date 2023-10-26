@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@pcd/passport-interface": "^0.8.0",
+    "@pcd/zk-eddsa-event-ticket-pcd": "^0.2.0",
     "@vercel/kv": "^0.2.3",
     "grammy": "^1.19.1",
     "typescript": "^5.2.2",

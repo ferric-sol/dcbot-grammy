@@ -5,6 +5,13 @@ import { gnosis } from 'viem/chains'
 import { normalize } from 'viem/ens'
 import { privateKeyToAccount } from 'viem/accounts'
 import { generatePrivateKey } from 'viem/accounts'
+import {
+  constructZupassPcdGetRequestUrl,
+} from "@pcd/passport-interface/src/PassportInterface";
+import {
+  ZKEdDSAEventTicketPCDArgs,
+  ZKEdDSAEventTicketPCDPackage
+} from "@pcd/zk-eddsa-event-ticket-pcd";
 
 const token = process.env.TELEGRAM_API_KEY
 if (!token) throw new Error("BOT_TOKEN is unset");
@@ -41,7 +48,7 @@ const getKeyPair = async (username: string): Promise<KeyPair | null> => {
 
 bot.command("start", (ctx) => ctx.reply("Welcome! Up and running."));
 bot.command("balance", async (ctx) =>  {
-  const ethAddressOrEns = ctx.message?.text;
+  const ethAddressOrEns = ctx.message?.text.replace('/balance', '').trim();
   const keyPair = ctx.from ? await getKeyPair(ctx.from.toString()) : null;
   if (ethAddressOrEns && ethAddressOrEns?.length > 0) {
     const ensAddress = await client.getEnsAddress({ name: normalize(ethAddressOrEns) });
@@ -57,7 +64,7 @@ bot.command("balance", async (ctx) =>  {
 });
 
 bot.command("balanceaddr", async (ctx) =>  {
-  const ethAddress = ctx.message?.text;
+  const ethAddress = ctx.message?.text.replace('/balanceaddr', '').trim();
   const keyPair = ctx.from ? await getKeyPair(ctx.from.toString()) : null;
   if (ethAddress) {
     ctx.reply(await returnBalance(ethAddress));

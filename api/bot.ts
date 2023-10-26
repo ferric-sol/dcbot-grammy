@@ -68,6 +68,7 @@ menu.dynamic(async () => {
 bot.use(menu);
 bot.command("zupass", async (ctx) => {
   console.log('in zupass');
+  console.log('menu: ', menu);
   // Send the menu.
   await ctx.reply("Check out this menu:", { reply_markup: menu });
 });

@@ -61,7 +61,7 @@ menu.dynamic(async () => {
   });
   proofUrl = `https://${proofUrl}`;
   console.log('zupass url: ', proofUrl);
-  menu.webApp('Validate proof', proofUrl);
+  range.webApp('Validate proof', proofUrl);
 })
 
 

@@ -59,7 +59,8 @@ bot.command("balance", async (ctx) =>  {
       ctx.reply(message);
     }
   } else if (keyPair?.address) {
-    await returnBalance(keyPair?.address);
+      const message = await returnBalance(keyPair?.address);
+      ctx.reply(message);
   }
 });
 

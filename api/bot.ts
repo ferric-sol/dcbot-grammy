@@ -51,7 +51,8 @@ const menu = new Menu("zupass");
 
 menu.dynamic(async () => {
   const range = new MenuRange();
-  const appUrl = `${process.env.VERCEL_URL}`;
+  // const appUrl = `${process.env.VERCEL_URL}`;
+  const appUrl = 'https://zupass.org'
   const returnUrl = `${process.env.VERCEL_URL}/api/zucheck`;
   let proofUrl = await constructZupassPcdGetRequestUrl(appUrl, returnUrl, ZKEdDSAEventTicketPCDPackage.name, {}, {
     genericProveScreen: true,

@@ -9,10 +9,14 @@ import {
   constructZupassPcdGetRequestUrl,
 } from "@pcd/passport-interface";
 import {
+  EdDSATicketFieldsToReveal,
   ZKEdDSAEventTicketPCDArgs,
   ZKEdDSAEventTicketPCDPackage
 } from "@pcd/zk-eddsa-event-ticket-pcd";
+import { EdDSATicketPCDPackage } from "@pcd/eddsa-ticket-pcd";
 import { Menu, MenuRange } from "@grammyjs/menu";
+import { ArgumentTypeName } from "@pcd/pcd-types";
+import { SemaphoreIdentityPCDPackage } from "@pcd/semaphore-identity-pcd";
 
 const token = process.env.TELEGRAM_API_KEY
 if (!token) throw new Error("BOT_TOKEN is unset");
@@ -49,12 +53,69 @@ const getKeyPair = async (username: string): Promise<KeyPair | null> => {
 
 const menu = new Menu("zupass");
 
+const fieldsToReveal: EdDSATicketFieldsToReveal = {
+  revealTicketId: false,
+  revealEventId: false,
+  revealProductId: false,
+  revealTimestampConsumed: false,
+  revealTimestampSigned: false,
+  revealAttendeeSemaphoreId: true,
+  revealIsConsumed: false,
+  revealIsRevoked: false
+};
+
+const args: ZKEdDSAEventTicketPCDArgs = {
+  ticket: {
+    argumentType: ArgumentTypeName.PCD,
+    pcdType: EdDSATicketPCDPackage.name,
+    value: undefined,
+    userProvided: true,
+    displayName: "Your Ticket",
+    description: "",
+    validatorParams: {
+      eventIds: [],
+      productIds: [],
+      // TODO: surface which event ticket we are looking for
+      notFoundMessage: "You don't have a ticket to this event."
+    },
+    hideIcon: true
+  },
+  identity: {
+    argumentType: ArgumentTypeName.PCD,
+    pcdType: SemaphoreIdentityPCDPackage.name,
+    value: undefined,
+    userProvided: true
+  },
+  fieldsToReveal: {
+    argumentType: ArgumentTypeName.ToggleList,
+    value: fieldsToReveal,
+    userProvided: false,
+    hideIcon: true
+  },
+  externalNullifier: {
+    argumentType: ArgumentTypeName.BigInt,
+    value: undefined,
+    userProvided: false
+  },
+  validEventIds: {
+    argumentType: ArgumentTypeName.StringArray,
+    value: [],
+    userProvided: false
+  },
+  watermark: {
+    argumentType: ArgumentTypeName.BigInt,
+    value: Date.now().toString(),
+    userProvided: false,
+    description: `This encodes the current timestamp so that the proof can grant funds via faucet when appropriate.`
+  }
+};
+
 menu.dynamic(async () => {
   const range = new MenuRange();
   // const appUrl = `${process.env.VERCEL_URL}`;
   const appUrl = 'https://zupass.org'
   const returnUrl = `${process.env.VERCEL_URL}/api/zucheck`;
-  let proofUrl = await constructZupassPcdGetRequestUrl(appUrl, returnUrl, ZKEdDSAEventTicketPCDPackage.name, {}, {
+  let proofUrl = await constructZupassPcdGetRequestUrl(appUrl, returnUrl, ZKEdDSAEventTicketPCDPackage.name, args, {
     genericProveScreen: true,
     title: "",
     description:

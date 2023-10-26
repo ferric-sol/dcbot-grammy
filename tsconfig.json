@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "target": "ES2019",
-    "module": "commonjs",
+    "module": "nodenext",
     "rootDir": "./api",
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "resolveJsonModule": true,
     "outDir": "./build",
     "allowSyntheticDefaultImports": true,

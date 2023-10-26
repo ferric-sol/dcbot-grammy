@@ -138,7 +138,8 @@ bot.command("zupass", async (ctx) => {
 
 bot.command("start", (ctx) => ctx.reply("Welcome! Up and running."));
 bot.command("balance", async (ctx) =>  {
-  const ethAddressOrEns = ctx.message?.text.replace('/balance', '').trim();
+  let ethAddressOrEns = ctx.message?.text.replace('/balance', '').trim();
+  ethAddressOrEns = ctx.message?.text.replace('@DCFruitBot', '').trim();
   const keyPair = ctx.from ? await getKeyPair(ctx.from.toString()) : null;
   if (ethAddressOrEns && ethAddressOrEns?.length > 0) {
     const ensAddress = await client.getEnsAddress({ name: normalize(ethAddressOrEns) });
@@ -155,7 +156,8 @@ bot.command("balance", async (ctx) =>  {
 });
 
 bot.command("balanceaddr", async (ctx) =>  {
-  const ethAddress = ctx.message?.text.replace('/balanceaddr', '').trim();
+  let ethAddress = ctx.message?.text.replace('/balanceaddr', '').trim();
+  ethAddress = ctx.message?.text.replace('@DCFruitBot', '').trim();
   const keyPair = ctx.from ? await getKeyPair(ctx.from.toString()) : null;
   if (ethAddress) {
     ctx.reply(await returnBalance(ethAddress));

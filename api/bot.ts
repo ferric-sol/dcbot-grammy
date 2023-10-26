@@ -63,6 +63,8 @@ menu.dynamic(async () => {
   menu.webApp('Validate proof', proofUrl);
 })
 
+
+
 bot.use(menu);
 bot.command("zupass", async (ctx) => {
   console.log('in zupass');

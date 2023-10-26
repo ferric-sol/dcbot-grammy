@@ -60,7 +60,6 @@ menu.dynamic(async () => {
     description:
       "Fruitbot requests a zero-knowledge proof of your ticket to trade fruit"
   });
-  proofUrl = `https://${proofUrl}`;
   console.log('zupass url: ', proofUrl);
   range.webApp('Validate proof', proofUrl);
   return range;

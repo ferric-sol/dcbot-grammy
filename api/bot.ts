@@ -42,7 +42,7 @@ const getKeyPair = async (username: string): Promise<KeyPair | null> => {
 bot.command("start", (ctx) => ctx.reply("Welcome! Up and running."));
 bot.command("balance", async (ctx) =>  {
   const ethAddressOrEns = ctx.message?.text;
-  const keyPair = ctx.message?.from ? await getKeyPair(ctx.message.from.toString()) : null;
+  const keyPair = ctx.from ? await getKeyPair(ctx.from.toString()) : null;
   if (ethAddressOrEns && ethAddressOrEns?.length > 0) {
     const ensAddress = await client.getEnsAddress({ name: normalize(ethAddressOrEns) });
     if (ensAddress !== null) {
@@ -58,7 +58,7 @@ bot.command("balance", async (ctx) =>  {
 
 bot.command("balanceaddr", async (ctx) =>  {
   const ethAddress = ctx.message?.text;
-  const keyPair = ctx.message?.from ? await getKeyPair(ctx.message.from.toString()) : null;
+  const keyPair = ctx.from ? await getKeyPair(ctx.from.toString()) : null;
   if (ethAddress) {
     ctx.reply(await returnBalance(ethAddress));
   } else if (keyPair?.address) {
@@ -67,7 +67,8 @@ bot.command("balanceaddr", async (ctx) =>  {
 });
 
 bot.command("generate", async (ctx) =>  {
-  const username =  ctx.message?.from.toString();
+  console.log('from:', ctx.from)
+  const username =  ctx.from?.toString();
   if(!username) {
     ctx.reply('No username');
     return;

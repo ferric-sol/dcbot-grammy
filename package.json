@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@grammyjs/menu": "^1.2.1",
     "@pcd/passport-interface": "^0.8.0",
     "@pcd/zk-eddsa-event-ticket-pcd": "^0.2.0",
     "@vercel/kv": "^0.2.3",

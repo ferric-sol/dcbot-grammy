@@ -12,6 +12,7 @@ import {
   ZKEdDSAEventTicketPCDArgs,
   ZKEdDSAEventTicketPCDPackage
 } from "@pcd/zk-eddsa-event-ticket-pcd";
+import { Menu, MenuRange } from "@grammyjs/menu";
 
 const token = process.env.TELEGRAM_API_KEY
 if (!token) throw new Error("BOT_TOKEN is unset");
@@ -45,6 +46,29 @@ const kv = createClient({
 const getKeyPair = async (username: string): Promise<KeyPair | null> => {
   return await kv.get(`user:${username}`);
 }
+
+const menu = new Menu("zupass");
+
+menu.dynamic(async () => {
+  const range = new MenuRange();
+  const appUrl = `${process.env.VERCEL_URL}`;
+  const returnUrl = `${process.env.VERCEL_URL}/api/zucheck`;
+  const proofUrl = await constructZupassPcdGetRequestUrl(appUrl, returnUrl, ZKEdDSAEventTicketPCDPackage.name, {}, {
+    genericProveScreen: true,
+    title: "",
+    description:
+      "Fruitbot requests a zero-knowledge proof of your ticket to trade fruit"
+  });
+  console.log('zupass url: ', proofUrl);
+  menu.webApp('Validate proof', proofUrl);
+})
+
+bot.use(menu);
+bot.command("zupass", async (ctx) => {
+  console.log('in zupass');
+  // Send the menu.
+  await ctx.reply("Check out this menu:", { reply_markup: menu });
+});
 
 bot.command("start", (ctx) => ctx.reply("Welcome! Up and running."));
 bot.command("balance", async (ctx) =>  {

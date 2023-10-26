@@ -53,12 +53,13 @@ menu.dynamic(async () => {
   const range = new MenuRange();
   const appUrl = `${process.env.VERCEL_URL}`;
   const returnUrl = `${process.env.VERCEL_URL}/api/zucheck`;
-  const proofUrl = await constructZupassPcdGetRequestUrl(appUrl, returnUrl, ZKEdDSAEventTicketPCDPackage.name, {}, {
+  let proofUrl = await constructZupassPcdGetRequestUrl(appUrl, returnUrl, ZKEdDSAEventTicketPCDPackage.name, {}, {
     genericProveScreen: true,
     title: "",
     description:
       "Fruitbot requests a zero-knowledge proof of your ticket to trade fruit"
   });
+  proofUrl = `https://${proofUrl}`;
   console.log('zupass url: ', proofUrl);
   menu.webApp('Validate proof', proofUrl);
 })

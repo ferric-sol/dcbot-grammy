@@ -99,7 +99,7 @@ const args: ZKEdDSAEventTicketPCDArgs = {
   },
   validEventIds: {
     argumentType: ArgumentTypeName.StringArray,
-    value: [],
+    value: ['b03bca82-2d63-11ee-9929-0e084c48e15f'],
     userProvided: false
   },
   watermark: {

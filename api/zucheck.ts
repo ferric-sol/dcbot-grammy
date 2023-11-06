@@ -12,6 +12,29 @@ if (!KV_REST_API_URL || !KV_REST_API_TOKEN || !GNOSIS_URL || !TELEGRAM_API_KEY) 
   throw new Error('Environment variables KV_REST_API_URL and KV_REST_API_TOKEN and ALCHEMY_URL and TELEGRAM_API_KEY must be defined');
 }
 
+export const closeWebviewHtml = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Sample HTML Page</title>
+      <script src="https://telegram.org/js/telegram-web-app.js"></script>
+      <style>
+        body {
+          margin: 0;
+          padding: 0;
+          background-color: #2a3231;
+        }
+      </style>
+    </head>
+    <body>
+      <script>
+        // Call the function when the page loads
+        window.onload = Telegram.WebApp.close();
+      </script>
+    </body>
+    </html>
+  `;
+
 async function verifyZKEdDSAEventTicketPCD(
   serializedZKEdDSATicket: string
 ): Promise<ZKEdDSAEventTicketPCD | null> {
@@ -58,12 +81,13 @@ export async function GET(request: Request, res: Response) {
     const proof = searchParams.has('proof') ? searchParams.get('proof') : null;
     const telegram_user_id = searchParams.has('id') ? searchParams.get('id') : null;
     let telegram_username = searchParams.has('username') ? searchParams.get('username') : undefined;
+    console.log('telegram_user_id: ', telegram_user_id, searchParams);
 
-    if (!telegram_user_id || !/^-?\d+$/.test(telegram_user_id)) {
-      throw new Error(
-        "telegram_user_id field needs to be a numeric string and be non-empty"
-      );
-    }
+    // if (!telegram_user_id || !/^-?\d+$/.test(telegram_user_id)) {
+    //   throw new Error(
+    //     "telegram_user_id field needs to be a numeric string and be non-empty"
+    //   );
+    // }
 
     // express path param value should always be undefined rather than empty string, but adding this just in case
     if (telegram_username?.length === 0) {
@@ -99,10 +123,10 @@ export async function GET(request: Request, res: Response) {
     // res.set("Content-Type", "text/html");
     // res.status(500).send(errorHtmlWithDetails(e as Error));
   }
- 
-  return NextResponse.json(
-    {
-      status: 200,
+  return new NextResponse(closeWebviewHtml, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/html'
     },
-  );
+  });
 }

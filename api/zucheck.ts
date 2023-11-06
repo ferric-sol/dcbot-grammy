@@ -50,13 +50,8 @@ async function verifyZKEdDSAEventTicketPCD(
 
   let signerMatch = false;
 
-  if (!process.env.SERVER_EDDSA_PRIVATE_KEY)
-    throw new Error(`Missing server eddsa private key .env value`);
-
-  // This Pubkey value should work for staging + prod as well, but needs to be tested
-  const TICKETING_PUBKEY = await getEdDSAPublicKey(
-    process.env.SERVER_EDDSA_PRIVATE_KEY
-  );
+  const zupassPubkeyReq = await fetch('https://api.zupass.org/issue/eddsa-public-key');
+  const TICKETING_PUBKEY = await zupassPubkeyReq.json();
 
   signerMatch =
     pcd.claim.signer[0] === TICKETING_PUBKEY[0] &&

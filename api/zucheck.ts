@@ -153,7 +153,7 @@ export async function GET(request: Request, res: Response) {
         const account = privateKeyToAccount(
           "0xd08f8438025b4145a67af65a379b26e7deacec02add261e3b87744991db17ae3"
         );
-        console.log("account:", account);
+        //console.log("account:", account);
 
         // Connect to our Faucet EOA
         const client = createWalletClient({
@@ -176,7 +176,7 @@ export async function GET(request: Request, res: Response) {
         });
         //console.log("request:", request);
         const hash = await client.writeContract(request); // Wallet Action
-        console.log("hash:", hash);
+        //console.log("hash:", hash);
 
         // Update user's last_drip timestamp
         //await kv.set(`verified_user:${telegram_username}`, Date.now());

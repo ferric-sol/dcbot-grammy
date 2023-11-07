@@ -167,6 +167,7 @@ bot.command("balance", async (ctx) => {
   if (keyPair?.address) {
     console.log("addr:", keyPair?.address);
     const message = await getBalance(keyPair?.address);
+
     ctx.reply(message);
   }
 });

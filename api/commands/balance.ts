@@ -23,6 +23,6 @@ export default async function getBalance(address: string) {
     functionName: "balanceOf",
     args: [address],
   });
-  console.log("data:", data);
-  return data;
+  console.log("data:", data.toString());
+  return `Your SALT balance is: ${data.toString()}`;
 }

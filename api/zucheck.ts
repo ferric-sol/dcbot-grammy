@@ -138,7 +138,7 @@ export async function GET(request: Request, res: Response) {
       // Assuming pcd.claim is a timestamp
       const claimTimestamp = parseInt(watermark);
 
-      console.log("now, tiemstamp", Date.now(), claimTimestamp);
+      console.log("now, tiemstamp", last_drip, claimTimestamp);
       // Check if current time is 10 minutes after claim time
       if (last_drip - claimTimestamp >= TEN_MINUTES_IN_MS) {
         console.log("last_drip is 10 minutes after pcd.claim");

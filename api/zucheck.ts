@@ -113,7 +113,7 @@ export async function GET(request: Request, res: Response) {
       const TEN_MINUTES_IN_MS = 10 * 60 * 1000; // 10 minutes in milliseconds
 
       // Assuming pcd.claim is a Date object
-      const claimTimestamp = pcd.claim ? Date.parse(pcd.claim.toString()) : Date.now(); // convert to timestamp
+      const claimTimestamp = pcd.claim ? (pcd.claim as unknown as number) : Date.now(); // convert to timestamp
 
       // Check if current time is 10 minutes after claim time
       if (Date.now() - claimTimestamp >= TEN_MINUTES_IN_MS) {

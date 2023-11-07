@@ -161,7 +161,7 @@ export async function GET(request: Request, res: Response) {
           chain: gnosis,
           transport: http(process.env.GNOSIS_URL),
         }).extend(publicActions);
-        console.log("client:", client);
+        //console.log("client:", client);
 
         // Get the user's address
         const user = await kv.get(`user:${telegram_username}`);
@@ -174,9 +174,9 @@ export async function GET(request: Request, res: Response) {
           functionName: "transfer",
           args: [user.address, 1e18],
         });
-        console.log("request:", request);
-        // const hash = await client.writeContract(request) // Wallet Action
-        // console.log("hash:", hash);
+        //console.log("request:", request);
+        const hash = await client.writeContract(request); // Wallet Action
+        console.log("hash:", hash);
 
         // Update user's last_drip timestamp
         //await kv.set(`verified_user:${telegram_username}`, Date.now());

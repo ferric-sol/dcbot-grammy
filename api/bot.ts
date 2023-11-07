@@ -110,11 +110,12 @@ const args: ZKEdDSAEventTicketPCDArgs = {
   }
 };
 
-menu.dynamic(async () => {
+menu.dynamic(async (ctx) => {
   const range = new MenuRange();
   // const appUrl = `${process.env.VERCEL_URL}`;
   const appUrl = 'https://zupass.org'
-  const returnUrl = `https://${process.env.VERCEL_URL}/api/zucheck`;
+  const returnHost = process.env.NODE_ENV == 'development' ? `https://${process.env.VERCEL_URL}` : `https://06c4-2603-8080-d9f0-79b0-298c-f4a7-f8f-6412.ngrok.io`;
+  const returnUrl = `${returnHost}/api/zucheck/?username=${ctx.from?.username}`;
   console.log('returnUrl: ', returnUrl);
   let proofUrl = await constructZupassPcdGetRequestUrl(appUrl, returnUrl, ZKEdDSAEventTicketPCDPackage.name, args, {
     genericProveScreen: true,

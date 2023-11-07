@@ -30,7 +30,7 @@ export const closeWebviewHtml = `
       <script>
         // Call the function when the page loads
         You are now ready to play!
-        <a href="#" onClick="Telegram.WebApp.close();">click here to close this window</a>
+        <a href="javascript:onclick=Telegram.WebApp.close();">click here to close this window</a>
       </script>
     </body>
     </html>

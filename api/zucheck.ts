@@ -145,11 +145,6 @@ export async function GET(request: Request, res: Response) {
       // Check if current time is 10 minutes after claim time
       if (Date.now() - last_drip >= TEN_MINUTES_IN_MS) {
         console.log("last_drip is 10 minutes after pcd.claim");
-        await kv.set(`verified_user:${telegram_username}`, Date.now());
-        await bot.api.sendMessage(
-          chat_id,
-          "You have successfully verified, we've sent you some SALT to play with"
-        );
 
         // Drip funds from the faucet to this user's address
         const FAUCET_AMOUNT = ".01";
@@ -164,7 +159,7 @@ export async function GET(request: Request, res: Response) {
         const client = createWalletClient({
           account,
           chain: gnosis,
-          transport: http(proccess.env.GNOSIS_URL),
+          transport: http(process.env.GNOSIS_URL),
         }).extend(publicActions);
         console.log("client:", client);
 
@@ -182,6 +177,13 @@ export async function GET(request: Request, res: Response) {
         console.log("request:", request);
         // const hash = await client.writeContract(request) // Wallet Action
         // console.log("hash:", hash);
+
+        // Update user's last_drip timestamp
+        //await kv.set(`verified_user:${telegram_username}`, Date.now());
+        await bot.api.sendMessage(
+          chat_id,
+          "You have successfully verified, we've sent you some SALT to play with"
+        );
       } else {
         console.log("last_drip is not yet 10 minutes after pcd.claim");
         await bot.api.sendMessage(

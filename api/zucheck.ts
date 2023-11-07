@@ -111,7 +111,7 @@ export async function GET(request: Request, res: Response) {
       });
 
       await kv.set(`verified_user:${telegram_username}`, Date.now());
-      bot.api.sendMessage(chat_id, 'You have successfully verified, type /start to play')
+      await bot.api.sendMessage(chat_id, 'You have successfully verified, type /start to play')
       // TODO: Drip funds from the fauucet to this user's address
     }
 

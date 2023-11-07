@@ -1,21 +1,32 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 import {
   ZKEdDSAEventTicketPCD,
-  ZKEdDSAEventTicketPCDPackage
+  ZKEdDSAEventTicketPCDPackage,
 } from "@pcd/zk-eddsa-event-ticket-pcd";
 import { getEdDSAPublicKey } from "@pcd/eddsa-pcd";
-import { createClient } from '@vercel/kv';
+import { createClient } from "@vercel/kv";
 import { Bot, webhookCallback } from "grammy";
+import { abi } from "../abi/xDAI";
+import { createWalletClient, http, publicActions } from "viem";
+import { gnosis } from "viem/chains";
 
-const { KV_REST_API_URL, KV_REST_API_TOKEN, GNOSIS_URL, TELEGRAM_API_KEY } = process.env;
+const { KV_REST_API_URL, KV_REST_API_TOKEN, GNOSIS_URL, TELEGRAM_API_KEY } =
+  process.env;
 
-const token = process.env.TELEGRAM_API_KEY
+const token = process.env.TELEGRAM_API_KEY;
 if (!token) throw new Error("BOT_TOKEN is unset");
 
 const bot = new Bot(token);
 
-if (!KV_REST_API_URL || !KV_REST_API_TOKEN || !GNOSIS_URL || !TELEGRAM_API_KEY) {
-  throw new Error('Environment variables KV_REST_API_URL and KV_REST_API_TOKEN and ALCHEMY_URL and TELEGRAM_API_KEY must be defined');
+if (
+  !KV_REST_API_URL ||
+  !KV_REST_API_TOKEN ||
+  !GNOSIS_URL ||
+  !TELEGRAM_API_KEY
+) {
+  throw new Error(
+    "Environment variables KV_REST_API_URL and KV_REST_API_TOKEN and ALCHEMY_URL and TELEGRAM_API_KEY must be defined"
+  );
 }
 
 export const closeWebviewHtml = `
@@ -56,7 +67,9 @@ async function verifyZKEdDSAEventTicketPCD(
 
   let signerMatch = false;
 
-  const zupassPubkeyReq = await fetch('https://api.zupass.org/issue/eddsa-public-key');
+  const zupassPubkeyReq = await fetch(
+    "https://api.zupass.org/issue/eddsa-public-key"
+  );
   const TICKETING_PUBKEY = await zupassPubkeyReq.json();
 
   signerMatch =
@@ -73,17 +86,22 @@ async function verifyZKEdDSAEventTicketPCD(
     console.log("[TELEGRAM] pcd invalid");
     return null;
   }
+}
 
-};
- 
 export async function GET(request: Request, res: Response) {
   const { searchParams } = new URL(request.url);
   try {
-    const proof = searchParams.has('proof') ? searchParams.get('proof') : null;
-    const telegram_user_id = searchParams.has('') ? searchParams.get('id') : null;
-    const chat_id = searchParams.has('telegram_chat_id') ? searchParams.get('telegram_chat_id') || 0 : 0;
-    let telegram_username = searchParams.has('username') ? searchParams.get('username') : undefined;
-    console.log('telegram_username: ', telegram_username, searchParams);
+    const proof = searchParams.has("proof") ? searchParams.get("proof") : null;
+    const telegram_user_id = searchParams.has("")
+      ? searchParams.get("id")
+      : null;
+    const chat_id = searchParams.has("telegram_chat_id")
+      ? searchParams.get("telegram_chat_id") || 0
+      : 0;
+    let telegram_username = searchParams.has("username")
+      ? searchParams.get("username")
+      : undefined;
+    console.log("telegram_username: ", telegram_username, searchParams);
 
     // if (!telegram_user_id || !/^-?\d+$/.test(telegram_user_id)) {
     //   throw new Error(
@@ -101,35 +119,79 @@ export async function GET(request: Request, res: Response) {
         (telegram_username && ` with username ${telegram_username}`)
     );
 
-    const pcd = await verifyZKEdDSAEventTicketPCD(proof ?? '');
+    const pcd = await verifyZKEdDSAEventTicketPCD(proof ?? "");
 
-    if(pcd && telegram_username) {
+    if (pcd && telegram_username) {
       // User verified, give access and close modal
       const kv = createClient({
-        url: KV_REST_API_URL || '',
-        token: KV_REST_API_TOKEN || '',
+        url: KV_REST_API_URL || "",
+        token: KV_REST_API_TOKEN || "",
       });
 
       const { watermark } = pcd.claim;
-      const last_drip = await kv.get(`verified_user:${telegram_username}`) as number;
+      const last_drip = (await kv.get(
+        `verified_user:${telegram_username}`
+      )) as number;
 
       const TEN_MINUTES_IN_MS = 10 * 60 * 1000; // 10 minutes in milliseconds
 
       // Assuming pcd.claim is a timestamp
       const claimTimestamp = parseInt(watermark);
 
-      console.log('now, tiemstamp', Date.now(), claimTimestamp);
+      console.log("now, tiemstamp", Date.now(), claimTimestamp);
       // Check if current time is 10 minutes after claim time
       if (last_drip - claimTimestamp >= TEN_MINUTES_IN_MS) {
-        console.log('last_drip is 10 minutes after pcd.claim');
+        console.log("last_drip is 10 minutes after pcd.claim");
         await kv.set(`verified_user:${telegram_username}`, Date.now());
-        await bot.api.sendMessage(chat_id, "You have successfully verified, we've sent you some SALT to play with");
+        await bot.api.sendMessage(
+          chat_id,
+          "You have successfully verified, we've sent you some SALT to play with"
+        );
+
+        // Drip funds from the faucet to this user's address
+        const FAUCET_AMOUNT = ".01";
+
+        // Connect to provider
+        const account = privateKeyToAccount(
+          "0xd08f8438025b4145a67af65a379b26e7deacec02add261e3b87744991db17ae3"
+        );
+        console.log("account:", account);
+
+        // Connect to our Faucet EOA
+        const client = createWalletClient({
+          account,
+          chain: gnosis,
+          transport: http(proccess.env.GNOSIS_URL),
+        }).extend(publicActions);
+        console.log("client:", client);
+
+        // Get the user's address
+        const user = await kv.get(`user:${telegram_username}`);
+
+        // Send the funds
+        const { request } = await client.simulateContract({
+          account,
+          address: "0x63fea6E447F120B8Faf85B53cdaD8348e645D80E",
+          abi: abi,
+          functionName: "transfer",
+          args: [user.address, 1e18],
+        });
+        console.log("request:", request);
+        // const hash = await client.writeContract(request) // Wallet Action
+        // console.log("hash:", hash);
       } else {
-        console.log('last_drip is not yet 10 minutes after pcd.claim');
-        await bot.api.sendMessage(chat_id, 'You are already verified, type /start to play')
+        console.log("last_drip is not yet 10 minutes after pcd.claim");
+        await bot.api.sendMessage(
+          chat_id,
+          "You are already verified, type /start to play"
+        );
       }
 
-      // TODO: Drip funds from the fauucet to this user's address
+      await kv.set(`verified_user:${telegram_username}`, Date.now());
+      await bot.api.sendMessage(
+        chat_id,
+        "You have successfully verified, type /start to play"
+      );
     }
 
     console.log(
@@ -147,7 +209,7 @@ export async function GET(request: Request, res: Response) {
   return new NextResponse(closeWebviewHtml, {
     status: 200,
     headers: {
-      'Content-Type': 'text/html'
+      "Content-Type": "text/html",
     },
   });
 }

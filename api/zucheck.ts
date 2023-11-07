@@ -142,7 +142,7 @@ export async function GET(request: Request, res: Response) {
       console.log("watermark:", new Date(claimTimestamp));
       console.log("now:", new Date(Date.now()));
       // Check if current time is 10 minutes after claim time
-      if (Date.now() - claimTimestamp >= TEN_MINUTES_IN_MS) {
+      if (Date.now() - last_drip >= TEN_MINUTES_IN_MS) {
         console.log("last_drip is 10 minutes after pcd.claim");
         await kv.set(`verified_user:${telegram_username}`, Date.now());
         await bot.api.sendMessage(

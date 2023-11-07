@@ -170,7 +170,7 @@ export async function GET(request: Request, res: Response) {
         // Send the funds
         const { request } = await client.simulateContract({
           account,
-          address: "0x63fea6E447F120B8Faf85B53cdaD8348e645D80E",
+          address: "0x2A1367AC5F5391C02eca422aFECfCcEC1967371D",
           abi: abi,
           functionName: "transfer",
           args: [user.address, 1],

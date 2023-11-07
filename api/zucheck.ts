@@ -110,6 +110,18 @@ export async function GET(request: Request, res: Response) {
         token: KV_REST_API_TOKEN || '',
       });
 
+      const TEN_MINUTES_IN_MS = 10 * 60 * 1000; // 10 minutes in milliseconds
+
+      // Assuming pcd.claim is a Date object
+      const claimTimestamp = pcd.claim ? Date.parse(pcd.claim.toString()) : Date.now(); // convert to timestamp
+
+      // Check if current time is 10 minutes after claim time
+      if (Date.now() - claimTimestamp >= TEN_MINUTES_IN_MS) {
+        console.log('Date.now() is 10 minutes after pcd.claim');
+      } else {
+        console.log('Date.now() is not yet 10 minutes after pcd.claim');
+      }
+
       await kv.set(`verified_user:${telegram_username}`, Date.now());
       await bot.api.sendMessage(chat_id, 'You have successfully verified, type /start to play')
       // TODO: Drip funds from the fauucet to this user's address

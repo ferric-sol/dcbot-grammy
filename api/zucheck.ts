@@ -133,7 +133,7 @@ export async function GET(request: Request, res: Response) {
         `verified_user:${telegram_username}`
       )) as number;
 
-      const TEN_MINUTES_IN_MS = 10 * 60 * 1000; // 10 minutes in milliseconds
+      const TEN_MINUTES_IN_MS = 4 * 60 * 1000; // 10 minutes in milliseconds
 
       // Assuming pcd.claim is a timestamp
       const claimTimestamp = parseInt(watermark);

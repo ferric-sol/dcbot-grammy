@@ -201,7 +201,7 @@ export async function GET(request: Request, res: Response) {
     // res.set("Content-Type", "text/html");
     // res.send(closeWebviewHtml);
   } catch (e) {
-    console.log("[TELEGRAM] failed to verify", e);
+    console.log("[TELEGRAM] failed to verify", e.message);
     // res.set("Content-Type", "text/html");
     // res.status(500).send(errorHtmlWithDetails(e as Error));
   }

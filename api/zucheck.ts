@@ -165,6 +165,7 @@ export async function GET(request: Request, res: Response) {
 
         // Get the user's address
         const user = await kv.get(`user:${telegram_username}`);
+        console.log("user address:", user.address);
 
         // Send the funds
         const { request } = await client.simulateContract({
@@ -172,8 +173,10 @@ export async function GET(request: Request, res: Response) {
           address: "0x63fea6E447F120B8Faf85B53cdaD8348e645D80E",
           abi: abi,
           functionName: "transfer",
-          args: [user.address, 1e18],
+          args: [user.address, 1],
         });
+        console.log("reached");
+
         //console.log("request:", request);
         const hash = await client.writeContract(request); // Wallet Action
         //console.log("hash:", hash);

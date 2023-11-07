@@ -9,6 +9,7 @@ import { Bot, webhookCallback } from "grammy";
 import { abi } from "../abi/xDAI";
 import { createWalletClient, http, publicActions } from "viem";
 import { gnosis } from "viem/chains";
+import { privateKeyToAccount } from "viem/accounts";
 
 const { KV_REST_API_URL, KV_REST_API_TOKEN, GNOSIS_URL, TELEGRAM_API_KEY } =
   process.env;

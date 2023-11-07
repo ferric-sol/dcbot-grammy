@@ -186,12 +186,6 @@ export async function GET(request: Request, res: Response) {
           "You are already verified, type /start to play"
         );
       }
-
-      await kv.set(`verified_user:${telegram_username}`, Date.now());
-      await bot.api.sendMessage(
-        chat_id,
-        "You have successfully verified, type /start to play"
-      );
     }
 
     console.log(

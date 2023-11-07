@@ -111,6 +111,7 @@ export async function GET(request: Request, res: Response) {
       });
 
       const { watermark } = pcd.claim;
+      const last_drip = await kv.get(`verified_user:${telegram_username}`) as number;
 
       const TEN_MINUTES_IN_MS = 10 * 60 * 1000; // 10 minutes in milliseconds
 
@@ -119,14 +120,15 @@ export async function GET(request: Request, res: Response) {
 
       console.log('now, tiemstamp', Date.now(), claimTimestamp);
       // Check if current time is 10 minutes after claim time
-      if (Date.now() - claimTimestamp >= TEN_MINUTES_IN_MS) {
-        console.log('Date.now() is 10 minutes after pcd.claim');
+      if (last_drip - claimTimestamp >= TEN_MINUTES_IN_MS) {
+        console.log('last_drip is 10 minutes after pcd.claim');
+        await kv.set(`verified_user:${telegram_username}`, Date.now());
+        await bot.api.sendMessage(chat_id, "You have successfully verified, we've sent you some SALT to play with");
       } else {
-        console.log('Date.now() is not yet 10 minutes after pcd.claim');
+        console.log('last_drip is not yet 10 minutes after pcd.claim');
+        await bot.api.sendMessage(chat_id, 'You are already verified, type /start to play')
       }
 
-      await kv.set(`verified_user:${telegram_username}`, Date.now());
-      await bot.api.sendMessage(chat_id, 'You have successfully verified, type /start to play')
       // TODO: Drip funds from the fauucet to this user's address
     }
 

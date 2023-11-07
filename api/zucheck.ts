@@ -110,6 +110,8 @@ export async function GET(request: Request, res: Response) {
         token: KV_REST_API_TOKEN || '',
       });
 
+      console.log(typeof pcd.claim, pcd.claim);
+
       const TEN_MINUTES_IN_MS = 10 * 60 * 1000; // 10 minutes in milliseconds
 
       // Assuming pcd.claim is a Date object

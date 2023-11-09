@@ -173,7 +173,7 @@ export async function GET(request: Request, res: Response) {
           address: "0x2A1367AC5F5391C02eca422aFECfCcEC1967371D",
           abi: abi,
           functionName: "transfer",
-          args: [user.address, 1e18],
+          args: [user.address, 1],
         });
         console.log("reached");
 
@@ -182,7 +182,7 @@ export async function GET(request: Request, res: Response) {
         //console.log("hash:", hash);
 
         // Update user's last_drip timestamp
-        //await kv.set(`verified_user:${telegram_username}`, Date.now());
+        await kv.set(`verified_user:${telegram_username}`, Date.now());
         await bot.api.sendMessage(
           chat_id,
           "You have successfully verified, we've sent you some SALT to play with"

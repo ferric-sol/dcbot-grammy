@@ -167,7 +167,7 @@ export async function GET(request: Request, res: Response) {
         const user = await kv.get(`user:${telegram_username}`);
         console.log("user address:", user.address);
 
-        const dripAmount = parseEther('0.01');
+        const dripAmount = 1;
 
         // Send the funds
         const { request } = await client.simulateContract({

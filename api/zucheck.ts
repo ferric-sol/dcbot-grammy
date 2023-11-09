@@ -7,7 +7,7 @@ import { getEdDSAPublicKey } from "@pcd/eddsa-pcd";
 import { createClient } from "@vercel/kv";
 import { Bot, webhookCallback } from "grammy";
 import { abi } from "../abi/xDAI";
-import { createWalletClient, http, publicActions } from "viem";
+import { createWalletClient, http, publicActions, parseEther } from "viem";
 import { gnosis } from "viem/chains";
 import { privateKeyToAccount } from "viem/accounts";
 
@@ -166,6 +166,8 @@ export async function GET(request: Request, res: Response) {
         // Get the user's address
         const user = await kv.get(`user:${telegram_username}`);
         console.log("user address:", user.address);
+
+        const dripAmount = parseEther('0.01');
 
         // Send the funds
         const { request } = await client.simulateContract({

@@ -5,8 +5,10 @@ import { gnosis } from "viem/chains";
 
 export default async function getBalance(address: string) {
   // Get the faucet EOA account
+  if(!process.env.FRUITBOT_FAUCET_KEY) return false;
+
   const account = privateKeyToAccount(
-    "0xd08f8438025b4145a67af65a379b26e7deacec02add261e3b87744991db17ae3"
+    `0x${process.env.FRUITBOT_FAUCET_KEY}`
   );
 
   // Initialize the viem client

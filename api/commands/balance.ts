@@ -19,12 +19,12 @@ export default async function getBalance(address: string) {
   }).extend(publicActions);
 
   // Call `balanceOf` on SALT contract
-  const data = await client.readContract({
+  const data: number = await client.readContract({
     address: "0x2A1367AC5F5391C02eca422aFECfCcEC1967371D",
     abi,
     functionName: "balanceOf",
     args: [address],
   });
-  console.log("data:", parseEther(data));
+  console.log("data:", parseEther(data);
   return `Your SALT balance is: ${parseEther(data)}`;
 }

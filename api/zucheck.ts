@@ -175,7 +175,7 @@ export async function GET(request: Request, res: Response) {
           address: "0x2A1367AC5F5391C02eca422aFECfCcEC1967371D",
           abi: abi,
           functionName: "transfer",
-          args: [user.address, 1],
+          args: [user.address, dripAmount]
         });
         console.log("reached");
 

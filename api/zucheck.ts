@@ -149,9 +149,11 @@ export async function GET(request: Request, res: Response) {
         // Drip funds from the faucet to this user's address
         const FAUCET_AMOUNT = ".01";
 
+        if(!process.env.FRUITBOT_FAUCET_KEY) return false;
+
         // Get the faucet EOA account
         const account = privateKeyToAccount(
-          "0xd08f8438025b4145a67af65a379b26e7deacec02add261e3b87744991db17ae3"
+          `0x${process.env.FRUITBOT_FAUCET_KEY}`
         );
         //console.log("account:", account);
 
@@ -167,7 +169,7 @@ export async function GET(request: Request, res: Response) {
         const user = await kv.get(`user:${telegram_username}`);
         console.log("user address:", user.address);
 
-        const dripAmount = 1;
+        const dripAmount = parseEther(FAUCET_AMOUNT);
 
         // Send the funds
         const { request } = await client.simulateContract({

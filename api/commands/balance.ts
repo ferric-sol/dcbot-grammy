@@ -1,6 +1,6 @@
 import { abi } from "../../abi/xDAI";
 import { privateKeyToAccount } from "viem/accounts";
-import { createWalletClient, http, publicActions } from "viem";
+import { createWalletClient, http, publicActions, parseEther } from "viem";
 import { gnosis } from "viem/chains";
 
 export default async function getBalance(address: string) {
@@ -25,6 +25,6 @@ export default async function getBalance(address: string) {
     functionName: "balanceOf",
     args: [address],
   });
-  console.log("data:", data);
-  return `Your SALT balance is: ${data.toString()}`;
+  console.log("data:", parseEther(data));
+  return `Your SALT balance is: ${parseEther(data)}`;
 }

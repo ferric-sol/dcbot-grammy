@@ -1,6 +1,6 @@
 import { abi } from "../../abi/xDAI";
 import { privateKeyToAccount } from "viem/accounts";
-import { createWalletClient, http, publicActions, parseEther } from "viem";
+import { createWalletClient, http, publicActions, parseEther, formatGwei } from "viem";
 import { gnosis } from "viem/chains";
 
 export default async function getBalance(address: string) {
@@ -19,12 +19,12 @@ export default async function getBalance(address: string) {
   }).extend(publicActions);
 
   // Call `balanceOf` on SALT contract
-  const data: number = await client.readContract({
+  const data = await client.readContract({
     address: "0x2A1367AC5F5391C02eca422aFECfCcEC1967371D",
     abi,
     functionName: "balanceOf",
     args: [address],
   });
   console.log("data:", data.toString());
-  return `Your SALT balance is: ${(data.toString())}`;
+  return `Your SALT balance is: ${formatGwei(data)}`;
 }

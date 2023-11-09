@@ -150,11 +150,13 @@ bot.command("zupass", async (ctx) => {
   console.log("menu: ", menu);
   // Send the menu.
   if (ctx.from?.id) {
-    await bot.api.sendMessage(
-      ctx.from?.id,
-      "Validate your proof and then use the menu to play:",
-      { reply_markup: menu }
-    );
+    ctx.reply("Validate your proof and then use the menu to play:", {reply_markup: menu });
+    // TODO: Figure out why this doesn't work
+    // await bot.api.sendMessage(
+    //   ctx.chat?.id,
+    //   "Validate your proof and then use the menu to play:",
+    //   { reply_markup: menu }
+    // );
   }
 });
 

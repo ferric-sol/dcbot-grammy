@@ -25,6 +25,6 @@ export default async function getBalance(address: string) {
     functionName: "balanceOf",
     args: [address],
   });
-  console.log("data:", parseEther(data);
-  return `Your SALT balance is: ${parseEther(data)}`;
+  console.log("data:", data.toString());
+  return `Your SALT balance is: ${(data.toString())}`;
 }

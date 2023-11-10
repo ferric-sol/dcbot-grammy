@@ -90,7 +90,10 @@ export default async function buy(
   const minOutParsed = parseEther(minOut.toString());
   console.log("minOutParsed:", minOutParsed);
 
-  // Right before swapping the tokens, we need to approve the DEX to take our SALT
+  /** Right before swapping the tokens, we need to approve the DEX to take our SALT
+   * Should first check allowance for desired fruit dex, then approve the difference between SALT to swap, and allowance value
+   * This way SALT is only approved if needed
+   */
   const approveTx = await client.writeContract({
     address: SaltToken.address,
     abi: SaltToken.abi,
@@ -99,15 +102,14 @@ export default async function buy(
   });
   console.log("approveTx:", approveTx);
 
-  
   // Swap the SALT for the fruit tokens
   // 0xa2212c6d <-- error code we are getting
-  const data = await client.writeContract({
-    address: tokenContract.address,
-    abi: tokenContract.abi,
-    functionName: "creditToAsset",
-    args: [salt, 0],
-  });
+  //   const data = await client.writeContract({
+  //     address: tokenContract.address,
+  //     abi: tokenContract.abi,
+  //     functionName: "creditToAsset",
+  //     args: [salt, 0],
+  //   });
 
   //console.log("data:", data.toString());
   //   console.log("data2:", formatEther(data));

@@ -1,4 +1,5 @@
 import { abi } from "../../abi/xDAI";
+import { Bot, webhookCallback } from "grammy";
 import { privateKeyToAccount } from "viem/accounts";
 import { createWalletClient, http, publicActions } from "viem";
 import { gnosis } from "viem/chains";

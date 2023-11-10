@@ -17,7 +17,9 @@ export default async function buy(tokenName: string, amount: number) {
   if (!process.env.FRUITBOT_FAUCET_KEY) return false;
 
   const account = privateKeyToAccount(`0x${process.env.FRUITBOT_FAUCET_KEY}`);
+  console.log("tokenName:", tokenName);
   const dexContractName: string = `BasicDex${tokenName}`;
+  console.log("dexContractName:", dexContractName);
 
   // Initialize the viem client
   const client = createWalletClient({

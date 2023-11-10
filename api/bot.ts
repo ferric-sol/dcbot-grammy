@@ -17,7 +17,7 @@ import { ArgumentTypeName } from "@pcd/pcd-types";
 import { SemaphoreIdentityPCDPackage } from "@pcd/semaphore-identity-pcd";
 import getBalance from "./commands/balance";
 import getPrice from "./commands/price";
-import zupass from "./commands/zupass";
+// import zupass from "./commands/zupass";
 import buy from "./commands/buy";
 
 const token = process.env.TELEGRAM_API_KEY;
@@ -158,21 +158,21 @@ menu.dynamic(async (ctx) => {
 // Commented out code was moved to `./commands/zupass.ts`
 bot.use(menu);
 bot.command("zupass", async (ctx) => {
-  // console.log("in zupass");
-  // console.log("menu: ", menu);
-  // // Send the menu.
-  // if (ctx.from?.id) {
-  //   ctx.reply("Validate your proof and then use the menu to play:", {
-  //     reply_markup: menu,
-  //   });
-  //   // TODO: Figure out why this doesn't work
-  //   // await bot.api.sendMessage(
-  //   //   ctx.chat?.id,
-  //   //   "Validate your proof and then use the menu to play:",
-  //   //   { reply_markup: menu }
-  //   // );
-  // }
-  await zupass();
+  console.log("in zupass");
+  console.log("menu: ", menu);
+  // Send the menu.
+  if (ctx.from?.id) {
+    ctx.reply("Validate your proof and then use the menu to play:", {
+      reply_markup: menu,
+    });
+    // TODO: Figure out why this doesn't work
+    // await bot.api.sendMessage(
+    //   ctx.chat?.id,
+    //   "Validate your proof and then use the menu to play:",
+    //   { reply_markup: menu }
+    // );
+  }
+  //await zupass();
 });
 
 // Command to start the bot

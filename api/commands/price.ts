@@ -19,6 +19,8 @@ export default async function getPrice(tokenName: string) {
     transport: http(process.env.GNOSIS_URL),
   }).extend(publicActions);
 
+  // TODO: TSify this using types from
+  // https://github.com/BuidlGuidl/event-wallet/blob/08790b0d8f070b22625b1fadcd312988a70be825/packages/nextjs/utils/scaffold-eth/contract.ts#L7 
   const tokenContract = (contracts as any)[`${dexContractName}`];
 
   if (!tokenContract) {

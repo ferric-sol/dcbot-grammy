@@ -51,8 +51,10 @@ export default async function buy(
   // TODO: TSify this using types from
   // https://github.com/BuidlGuidl/event-wallet/blob/08790b0d8f070b22625b1fadcd312988a70be825/packages/nextjs/utils/scaffold-eth/contract.ts#L7
   let tokenContract;
+  let saltContract;
   try {
     tokenContract = (contracts as any)[`${dexContractName}`];
+    saltContract = (contracts as any)["SaltToken"];
     //console.log("tokenContract:", tokenContract);
   } catch (error) {
     console.log("error:", error);
@@ -88,6 +90,16 @@ export default async function buy(
   const minOutParsed = parseEther(minOut.toString());
   console.log("minOutParsed:", minOutParsed);
 
+  // Right before swapping the tokens, we need to approve the DEX to take our SALT
+  const approveTx = await client.writeContract({
+    address: SaltToken.address,
+    abi: SaltToken.abi,
+    functionName: "approve",
+    args: [tokenContract.address, salt],
+  });
+  console.log("approveTx:", approveTx);
+
+  
   // Swap the SALT for the fruit tokens
   // 0xa2212c6d <-- error code we are getting
   const data = await client.writeContract({

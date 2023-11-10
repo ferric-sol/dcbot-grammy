@@ -4,6 +4,13 @@ import { createWalletClient, http, publicActions } from "viem";
 import { gnosis } from "viem/chains";
 import { Menu, MenuRange } from "@grammyjs/menu";
 
+// Initialize bot
+const token = process.env.TELEGRAM_API_KEY;
+if (!token) throw new Error("BOT_TOKEN is unset");
+
+const bot = new Bot(token);
+export default webhookCallback(bot, "http");
+
 // Menu gets intialized and has some values set
 const menu = new Menu("zupass");
 

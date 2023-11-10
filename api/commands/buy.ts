@@ -57,19 +57,20 @@ export default async function buy(tokenName: string, amount: number) {
   const salt = parseInt(amount) * parseInt(price);
   console.log("salt in:", salt);
 
-  // Calculate minimum fruit token amount to receive
+  // Calculate minimum fruit token amount to receive (currently hard-coded to 90% of original value)
   const minOut = amount * 0.9;
   console.log("minOut:", minOut);
 
   // Swap the SALT for the fruit tokens
-  const data = await client.writeContract({
-    address: tokenContract.address,
-    abi: tokenContract.abi,
-    functionName: "creditToAsset",
-    args: [salt, minOut],
-  });
+  //   const data = await client.writeContract({
+  //     address: tokenContract.address,
+  //     abi: tokenContract.abi,
+  //     functionName: "creditToAsset",
+  //     args: [salt, minOut],
+  //   });
 
-  console.log("data:", data.toString());
-  console.log("data2:", formatEther(data));
-  return `Price of 1 ${tokenName} is: ${formatEther(data)}`;
+  //   console.log("data:", data.toString());
+  //   console.log("data2:", formatEther(data));
+  //   return `Price of 1 ${tokenName} is: ${formatEther(data)}`;
+  return "Rohan Nero is the greatest";
 }

@@ -135,5 +135,6 @@ export default async function buy(
   //console.log("data:", data.toString());
   //   console.log("data2:", formatEther(data));
   //   return `Price of 1 ${tokenName} is: ${formatEther(data)}`;
+  // Temporary return text for testing purposes
   return "Rohan Nero is the greatest";
 }

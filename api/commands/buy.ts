@@ -37,6 +37,7 @@ export default async function buy(
   console.log("priv key:", keys.privateKey);
 
   const account = privateKeyToAccount(keys.privateKey);
+  console.log("account:", account);
   const dexContractName: string = `BasicDex${tokenName}`;
   console.log("dexContractName:", dexContractName);
 
@@ -87,12 +88,12 @@ export default async function buy(
   console.log("minOutParsed:", minOutParsed);
 
   // Swap the SALT for the fruit tokens
-  //   const data = await client.writeContract({
-  //     address: tokenContract.address,
-  //     abi: tokenContract.abi,
-  //     functionName: "creditToAsset",
-  //     args: [salt, minOutParsed],
-  //   });
+  const data = await client.writeContract({
+    address: tokenContract.address,
+    abi: tokenContract.abi,
+    functionName: "creditToAsset",
+    args: [salt, minOutParsed],
+  });
 
   //console.log("data:", data.toString());
   //   console.log("data2:", formatEther(data));

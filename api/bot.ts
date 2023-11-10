@@ -198,7 +198,7 @@ bot.command("buy", async (ctx) => {
     .replace("/buy", "")
     .replace("@DCFruitBot", "")
     .trim();
-  const inputSplit = input.split("");
+  const inputSplit = input.split(" ");
   console.log("input:", input);
   console.log("inputSplit:", inputSplit);
   const buyData = input ? await buy(inputSplit[1], inputSplit[0]) : null;

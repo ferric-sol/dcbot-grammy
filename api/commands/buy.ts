@@ -54,7 +54,7 @@ export default async function buy(tokenName: string, amount: number) {
   console.log("price:", price);
 
   // Use `price` to calculate min value out
-  const salt = ParseInt(amount) * ParseInt(price);
+  const salt = parseInt(amount) * parseInt(price);
   console.log("salt in:", salt);
 
   // Calculate minimum fruit token amount to receive

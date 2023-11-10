@@ -1,3 +1,4 @@
+// List of Fruit token contract addresses and ABIs as well as
 export const contracts = {
   AppleToken: {
     address: "0x48D1c60e807E340359ea1253Be4F2e60f9c65A36",

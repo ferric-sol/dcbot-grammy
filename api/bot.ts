@@ -17,6 +17,7 @@ import { ArgumentTypeName } from "@pcd/pcd-types";
 import { SemaphoreIdentityPCDPackage } from "@pcd/semaphore-identity-pcd";
 import getBalance from "./commands/balance";
 import getPrice from "./commands/price";
+import zupass from "./commands/zupass";
 
 const token = process.env.TELEGRAM_API_KEY;
 if (!token) throw new Error("BOT_TOKEN is unset");
@@ -147,18 +148,21 @@ menu.dynamic(async (ctx) => {
 
 bot.use(menu);
 bot.command("zupass", async (ctx) => {
-  console.log("in zupass");
-  console.log("menu: ", menu);
-  // Send the menu.
-  if (ctx.from?.id) {
-    ctx.reply("Validate your proof and then use the menu to play:", {reply_markup: menu });
-    // TODO: Figure out why this doesn't work
-    // await bot.api.sendMessage(
-    //   ctx.chat?.id,
-    //   "Validate your proof and then use the menu to play:",
-    //   { reply_markup: menu }
-    // );
-  }
+  // console.log("in zupass");
+  // console.log("menu: ", menu);
+  // // Send the menu.
+  // if (ctx.from?.id) {
+  //   ctx.reply("Validate your proof and then use the menu to play:", {
+  //     reply_markup: menu,
+  //   });
+  //   // TODO: Figure out why this doesn't work
+  //   // await bot.api.sendMessage(
+  //   //   ctx.chat?.id,
+  //   //   "Validate your proof and then use the menu to play:",
+  //   //   { reply_markup: menu }
+  //   // );
+  // }
+  await zupass();
 });
 
 bot.command("start", (ctx) => ctx.reply("Welcome! Up and running."));
@@ -169,7 +173,7 @@ bot.command("price", async (ctx) => {
     .replace("@DCFruitBot", "")
     .trim();
   const price = tokenName ? await getPrice(tokenName) : null;
-  if(price) {
+  if (price) {
     ctx.reply(price);
   } else {
     ctx.reply(`Price not found for ${tokenName}`);
@@ -189,21 +193,6 @@ bot.command("balance", async (ctx) => {
     const message = await getBalance(keyPair?.address);
 
     ctx.reply(message);
-  }
-});
-
-bot.command("balanceaddr", async (ctx) => {
-  const ethAddress = ctx.message?.text
-    .replace("/balanceaddr", "")
-    .replace("@DCFruitBot", "")
-    .trim();
-  const keyPair = ctx.from?.username
-    ? await getKeyPair(ctx.from?.username?.toString())
-    : null;
-  if (ethAddress) {
-    ctx.reply(await returnBalance(ethAddress));
-  } else if (keyPair?.address) {
-    ctx.reply(await returnBalance(keyPair?.address));
   }
 });
 

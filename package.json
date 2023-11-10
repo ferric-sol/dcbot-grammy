@@ -13,6 +13,7 @@
     "@pcd/passport-interface": "^0.8.0",
     "@pcd/zk-eddsa-event-ticket-pcd": "^0.2.0",
     "@vercel/kv": "^0.2.3",
+    "abitype": "^0.10.2",
     "grammy": "^1.19.1",
     "next": "^14.0.1",
     "typescript": "^5.2.2",

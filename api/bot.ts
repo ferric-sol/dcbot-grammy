@@ -16,6 +16,7 @@ import { Menu, MenuRange } from "@grammyjs/menu";
 import { ArgumentTypeName } from "@pcd/pcd-types";
 import { SemaphoreIdentityPCDPackage } from "@pcd/semaphore-identity-pcd";
 import getBalance from "./commands/balance";
+import getPrice from "./commands/price.ts";
 
 const token = process.env.TELEGRAM_API_KEY;
 if (!token) throw new Error("BOT_TOKEN is unset");
@@ -161,6 +162,19 @@ bot.command("zupass", async (ctx) => {
 });
 
 bot.command("start", (ctx) => ctx.reply("Welcome! Up and running."));
+
+bot.command("price", async (ctx) => {
+  const tokenName = ctx.message?.text
+    .replace("/price", "")
+    .replace("@DCFruitBot", "")
+    .trim();
+  const price = tokenName ? await getPrice(tokenName) : null;
+  if(price) {
+    ctx.reply(price);
+  } else {
+    ctx.reply(`Price not found for ${tokenName}`);
+  }
+});
 
 bot.command("balance", async (ctx) => {
   const ethAddressOrEns = ctx.message?.text

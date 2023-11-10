@@ -18,6 +18,7 @@ import { SemaphoreIdentityPCDPackage } from "@pcd/semaphore-identity-pcd";
 import getBalance from "./commands/balance";
 import getPrice from "./commands/price";
 import zupass from "./commands/zupass";
+import buy from "./commands/buy";
 
 const token = process.env.TELEGRAM_API_KEY;
 if (!token) throw new Error("BOT_TOKEN is unset");

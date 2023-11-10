@@ -34,8 +34,9 @@ export default async function buy(
   // Connect to the user's wallet
   const keys = await kv.get(`user:${username}`);
   console.log("keys:", keys);
+  console.log("priv key:", keys.privateKey);
 
-  const account = privateKeyToAccount(`0x${process.env.FRUITBOT_FAUCET_KEY}`);
+  const account = privateKeyToAccount(keys.privateKey);
   const dexContractName: string = `BasicDex${tokenName}`;
   console.log("dexContractName:", dexContractName);
 

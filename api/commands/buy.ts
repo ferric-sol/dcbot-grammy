@@ -36,6 +36,7 @@ export default async function buy(tokenName: string, amount: number) {
 
   if (!tokenContract) {
     throw new Error(`Token ${tokenName} not found in contracts`);
+    return;
   }
 
   /** Example Flow

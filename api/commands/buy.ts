@@ -13,11 +13,13 @@ import { contracts } from "../contracts";
 // 1. view token price in terms of SALT
 // 2. swap SALT for fruit token using price to calculate min value out
 export default async function buy(tokenName: string, amount: number) {
+  console.log("buy script input:");
+  console.log("tokenName:", tokenName);
+  console.log("amount:", amount);
   // Get the faucet EOA account
   if (!process.env.FRUITBOT_FAUCET_KEY) return false;
 
   const account = privateKeyToAccount(`0x${process.env.FRUITBOT_FAUCET_KEY}`);
-  console.log("tokenName:", tokenName);
   const dexContractName: string = `BasicDex${tokenName}`;
   console.log("dexContractName:", dexContractName);
 

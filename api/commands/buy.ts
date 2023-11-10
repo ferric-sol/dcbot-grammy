@@ -53,6 +53,7 @@ export default async function buy(
   let tokenContract;
   try {
     tokenContract = (contracts as any)[`${dexContractName}`];
+    console.log("tokenContract:", tokenContract);
   } catch (error) {
     console.log("error:", error);
   }
@@ -88,12 +89,12 @@ export default async function buy(
   console.log("minOutParsed:", minOutParsed);
 
   // Swap the SALT for the fruit tokens
-  const data = await client.writeContract({
-    address: tokenContract.address,
-    abi: tokenContract.abi,
-    functionName: "creditToAsset",
-    args: [salt, minOutParsed],
-  });
+  //   const data = await client.writeContract({
+  //     address: tokenContract.address,
+  //     abi: tokenContract.abi,
+  //     functionName: "creditToAsset",
+  //     args: [salt, minOutParsed],
+  //   }); 0xa2212c6d
 
   //console.log("data:", data.toString());
   //   console.log("data2:", formatEther(data));

@@ -16,7 +16,7 @@ import { Menu, MenuRange } from "@grammyjs/menu";
 import { ArgumentTypeName } from "@pcd/pcd-types";
 import { SemaphoreIdentityPCDPackage } from "@pcd/semaphore-identity-pcd";
 import getBalance from "./commands/balance";
-import getPrice from "./commands/price.ts";
+import getPrice from "./commands/price";
 
 const token = process.env.TELEGRAM_API_KEY;
 if (!token) throw new Error("BOT_TOKEN is unset");

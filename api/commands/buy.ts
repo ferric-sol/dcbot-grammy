@@ -60,7 +60,7 @@ export default async function buy(tokenName: string, amount: number) {
   // Calculate minimum fruit token amount to receive (currently hard-coded to 90% of original value)
   const minOut = amount * 0.9;
   console.log("minOut:", minOut);
-  const minOutParsed = parseEther(minOut);
+  const minOutParsed = parseEther(minOut.toString());
   console.log("minOutParsed:", minOutParsed);
 
   // Swap the SALT for the fruit tokens

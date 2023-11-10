@@ -113,7 +113,7 @@ export default async function buy(
       address: saltContract.address,
       abi: saltContract.abi,
       functionName: "approve",
-      args: [tokenContract.address, salt - allowance],
+      args: [tokenContract.address, salt - parseInt(allowance)],
     });
     console.log("approveTx:", approveTx);
   }

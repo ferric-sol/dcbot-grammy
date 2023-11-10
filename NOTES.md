@@ -7,3 +7,9 @@
    - replace the ending url with the url generated from step 2
    - to point the bot back to vercel use `curl -X POST https://api.telegram.org/bot6699648946:AAEQWwPSeyzSBQCGQewCt1PPfZa-VWq7sQQ/setWebhook -H "Content-type: application/json" -d '{"url": "https://dcbot-grammy.vercel.app/api/bot"}'`
    - Possibily point to `refactorCommands` branch? `curl -X POST https://api.telegram.org/bot6699648946:AAEQWwPSeyzSBQCGQewCt1PPfZa-VWq7sQQ/setWebhook -H "Content-type: application/json" -d '{"url": "https://dcbot-grammy-git-refactorcommands-ferric.vercel.app/api/bot?branch=refactorCommands"}'`
+
+## Left off
+
+### 23/11/10
+
+Setting up `buy.ts`, ran out of gnosis mainnet xDAI for sending transactions.

@@ -193,16 +193,18 @@ bot.command("price", async (ctx) => {
 
 // Buy x amount of any fruit token
 bot.command("buy", async (ctx) => {
-  const tokenName = ctx.message?.text
+  const input = ctx.message?.text
     .replace("/buy", "")
     .replace("@DCFruitBot", "")
     .trim();
-  console.log("tokenName:", tokenName);
-  const buyData = tokenName ? await buy(tokenName, 7) : null;
+  const inputSplit = input.split("");
+  console.log("input:", input);
+  console.log("inputSplit:", inputSplit);
+  const buyData = input ? await buy(inputSplit[1], inputSplit[0]) : null;
   if (buyData) {
     ctx.reply(buyData);
   } else {
-    ctx.reply(`Price not found for ${tokenName}`);
+    ctx.reply(`Price not found for ${inputSplit[1]}`);
   }
 });
 

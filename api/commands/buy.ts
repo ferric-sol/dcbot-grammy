@@ -53,12 +53,16 @@ export default async function buy(tokenName: string, amount: number) {
   const salt = amount * price;
   console.log("salt in:", salt);
 
+  // Calculate minimum fruit token amount to receive
+  const minOut = amount * 0.9;
+  console.log("minOut:", minOut);
+
   // Swap the SALT for the fruit tokens
   const data = await client.writeContract({
     address: tokenContract.address,
     abi: tokenContract.abi,
     functionName: "creditToAsset",
-    args: [parseEther("1")],
+    args: [salt, minOut],
   });
 
   console.log("data:", data.toString());

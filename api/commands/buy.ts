@@ -29,11 +29,10 @@ export default async function buy(
   console.log("tokenName:", tokenName);
   console.log("amount:", amount);
   console.log("username:", username);
-  // Get the faucet EOA account
-  if (!process.env.FRUITBOT_FAUCET_KEY) return false;
 
   // Connect to the user's wallet
   const keys = await kv.get(`user:${username}`);
+  console.log("keys:", keys);
 
   const account = privateKeyToAccount(`0x${process.env.FRUITBOT_FAUCET_KEY}`);
   const dexContractName: string = `BasicDex${tokenName}`;

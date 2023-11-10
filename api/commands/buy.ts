@@ -35,8 +35,8 @@ export default async function buy(tokenName: string, amount: number) {
   const tokenContract = (contracts as any)[`${dexContractName}`];
 
   if (!tokenContract) {
-    throw new Error(`Token ${tokenName} not found in contracts`);
-    return "Token contract not found";
+    //throw new Error(`Token ${tokenName} not found in contracts`);
+    return `Token ${tokenName} not found in contracts`;
   }
 
   /** Example Flow

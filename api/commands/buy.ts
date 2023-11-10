@@ -94,22 +94,42 @@ export default async function buy(
    * Should first check allowance for desired fruit dex, then approve the difference between SALT to swap, and allowance value
    * This way SALT is only approved if needed
    */
-  const approveTx = await client.writeContract({
+
+  // View current allownance
+  const allowance = await client.readContract({
     address: saltContract.address,
     abi: saltContract.abi,
-    functionName: "approve",
-    args: [tokenContract.address, salt],
+    functionName: "allowance",
+    args: [keys.address, tokenContract.address],
   });
-  console.log("approveTx:", approveTx);
+  console.log("allowance:", allowance);
+
+  // If you are trying to give the fruit contract more SALT than you currently have approved it to take
+  // we need to approve it to take the additional SALT
+  if (salt > allowance) {
+    // Approve the FRUIT contract to `transferFrom()` your SALT
+    const approveTx = await client.writeContract({
+      address: saltContract.address,
+      abi: saltContract.abi,
+      functionName: "approve",
+      args: [tokenContract.address, salt - allowance],
+    });
+    console.log("approveTx:", approveTx);
+  }
 
   // Swap the SALT for the fruit tokens
-  // 0xa2212c6d <-- error code we are getting
-  //   const data = await client.writeContract({
-  //     address: tokenContract.address,
-  //     abi: tokenContract.abi,
-  //     functionName: "creditToAsset",
-  //     args: [salt, 0],
-  //   });
+  // 0xa2212c6d <-- error code I was getting
+  // Need to ensure
+  // 1. the contract is approved to take our SALT
+  // 2. we have enough xDAI to pay for the transaction
+  // 3. the `minOut` variable is acceptable
+  // 4. the `salt` value is non-zero
+  const data = await client.writeContract({
+    address: tokenContract.address,
+    abi: tokenContract.abi,
+    functionName: "creditToAsset",
+    args: [salt, minOutParsed],
+  });
 
   //console.log("data:", data.toString());
   //   console.log("data2:", formatEther(data));

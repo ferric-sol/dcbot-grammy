@@ -198,7 +198,7 @@ bot.command("buy", async (ctx) => {
     .replace("@DCFruitBot", "")
     .trim();
   console.log("tokenName:", tokenName);
-  const buyData = tokenName ? await buy(tokenName, amount) : null;
+  const buyData = tokenName ? await buy(tokenName, 7) : null;
   if (buyData) {
     ctx.reply(buyData);
   } else {

@@ -194,6 +194,14 @@ bot.command("price", async (ctx) => {
 
 // Buy x amount of any fruit token
 bot.command("buy", async (ctx) => {
+  // Parse and pass username
+  const username = ctx.from?.username?.toString();
+  if (!username) {
+    ctx.reply("No username");
+    return;
+  }
+
+  // Parse and pass input
   const input = ctx.message?.text
     .replace("/buy", "")
     .replace("@DCFruitBot", "")
@@ -201,7 +209,9 @@ bot.command("buy", async (ctx) => {
   const inputSplit = input.split(" ");
   console.log("input:", input);
   console.log("inputSplit:", inputSplit);
-  const buyData = input ? await buy(inputSplit[1], inputSplit[0]) : null;
+  const buyData = input
+    ? await buy(inputSplit[1], inputSplit[0], username)
+    : null;
   if (buyData) {
     ctx.reply(buyData);
   } else {

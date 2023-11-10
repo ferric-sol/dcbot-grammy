@@ -9,21 +9,37 @@ import {
 import { gnosis } from "viem/chains";
 import { contracts } from "../contracts";
 
+// Before the function can be executed, we need to connect to the user's wallet
+
+// Initialize kv database
+const kv = createClient({
+  url: process.env.KV_REST_API_URL,
+  token: process.env.KV_REST_API_TOKEN,
+});
+
 // This function allows users to buy a Fruit token using SALT
 // 1. view token price in terms of SALT
 // 2. swap SALT for fruit token using price to calculate min value out
-export default async function buy(tokenName: string, amount: number) {
+export default async function buy(
+  tokenName: string,
+  amount: number,
+  username: string
+) {
   console.log("buy script input:");
   console.log("tokenName:", tokenName);
   console.log("amount:", amount);
+  console.log("username:", username);
   // Get the faucet EOA account
   if (!process.env.FRUITBOT_FAUCET_KEY) return false;
+
+  // Connect to the user's wallet
+  const keys = await kv.get(`user:${username}`);
 
   const account = privateKeyToAccount(`0x${process.env.FRUITBOT_FAUCET_KEY}`);
   const dexContractName: string = `BasicDex${tokenName}`;
   console.log("dexContractName:", dexContractName);
 
-  // Initialize the viem client
+  // Initialize the viem client using the user's private key in kv db
   const client = createWalletClient({
     account,
     chain: gnosis,
@@ -32,11 +48,16 @@ export default async function buy(tokenName: string, amount: number) {
 
   // TODO: TSify this using types from
   // https://github.com/BuidlGuidl/event-wallet/blob/08790b0d8f070b22625b1fadcd312988a70be825/packages/nextjs/utils/scaffold-eth/contract.ts#L7
-  const tokenContract = (contracts as any)[`${dexContractName}`];
+  let tokenContract;
+  try {
+    tokenContract = (contracts as any)[`${dexContractName}`];
+  } catch (error) {
+    console.log("error:", error);
+  }
 
   if (!tokenContract) {
     //throw new Error(`Token ${tokenName} not found in contracts`);
-    return `Token ${tokenName} not found in contracts`;
+    return `Token "${tokenName}" not found in contracts`;
   }
 
   /** Example Flow

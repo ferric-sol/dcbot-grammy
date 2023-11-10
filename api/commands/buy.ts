@@ -8,6 +8,7 @@ import {
 } from "viem";
 import { gnosis } from "viem/chains";
 import { contracts } from "../contracts";
+import { createClient } from "@vercel/kv";
 
 // Before the function can be executed, we need to connect to the user's wallet
 

@@ -95,8 +95,8 @@ export default async function buy(
    * This way SALT is only approved if needed
    */
   const approveTx = await client.writeContract({
-    address: SaltToken.address,
-    abi: SaltToken.abi,
+    address: saltContract.address,
+    abi: saltContract.abi,
     functionName: "approve",
     args: [tokenContract.address, salt],
   });

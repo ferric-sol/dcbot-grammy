@@ -148,8 +148,8 @@ export async function GET(request: Request, res: Response) {
       if (Date.now() - last_drip >= TEN_MINUTES_IN_MS) {
         console.log("last_drip is 10 minutes after pcd.claim");
 
-        // Drip funds from the faucet to this user's address
-        const FAUCET_AMOUNT = "1";
+        // Drip funds from the faucet to this user's address in terms of SALT (credits)
+        const FAUCET_AMOUNT = ".01";
 
         if (!process.env.FRUITBOT_FAUCET_KEY) return false;
 

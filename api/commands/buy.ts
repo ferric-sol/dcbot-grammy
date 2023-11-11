@@ -98,7 +98,7 @@ export default async function buy(
     address: saltContract.address,
     abi: saltContract.abi,
     functionName: "balanceOf",
-    args: [keys.address, tokenContract.address],
+    args: [keys.address],
   });
   console.log("salt balance:", saltBalance);
 

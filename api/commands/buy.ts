@@ -69,7 +69,9 @@ export default async function buy(
   /** Example Flow
    *  1. /buy 5 = You want 5 FRUIT for x SALT
    *  2. get price = .5 (1 SALT = 2 FRUIT)
-   *  3. swap tokens(salt amount, min fruit out) = (5 * .5, 5 * .9) <-- 90% slippage protection
+   *  3. ensure you have enough SALT to pay for it (balanceOf)
+   *  4. ensure you have approved fruit DEX to take the tokens, if not then approve it
+   *  5. swap tokens(salt amount, min fruit out) = (5 * .5, 5 * .9) <-- 90% slippage protection
    */
 
   // Get price of fruit token
@@ -90,6 +92,20 @@ export default async function buy(
   console.log("minOut:", minOut);
   const minOutParsed = parseEther(minOut.toString());
   console.log("minOutParsed:", minOutParsed);
+
+  /** Before we do anything, we need to ensure that the user has enough SALT to buy the fruit tokens */
+  const saltBalance = await client.readContract({
+    address: saltContract.address,
+    abi: saltContract.abi,
+    functionName: "balanceOf",
+    args: [keys.address, tokenContract.address],
+  });
+  console.log("salt balance:", saltBalance);
+
+  // If you don't have enough SALT, return a message saying so
+  if (saltBalance < salt) {
+    return "Insufficient SALT balance";
+  }
 
   /** Right before swapping the tokens, we need to approve the DEX to take our SALT
    * Should first check allowance for desired fruit dex, then approve the difference between SALT to swap, and allowance value

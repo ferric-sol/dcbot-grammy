@@ -129,7 +129,7 @@ export default async function buy(
     address: tokenContract.address,
     abi: tokenContract.abi,
     functionName: "creditToAsset",
-    args: [salt, minOutParsed],
+    args: [salt, 0], // temporarily set to 0,should use `minOutParsed`
   });
 
   //console.log("data:", data.toString());

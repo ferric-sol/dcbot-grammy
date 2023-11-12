@@ -144,14 +144,14 @@ export default async function buy(
   // 2. we have enough xDAI to pay for the transaction
   // 3. the `minOut` variable is acceptable
   // 4. the `salt` value is non-zero
-  // const data = await client.writeContract({
-  //   address: tokenContract.address,
-  //   abi: tokenContract.abi,
-  //   functionName: "creditToAsset",
-  //   args: [salt, 0], // temporarily set to 0,should use `minOutParsed`
-  // });
+  const data = await client.writeContract({
+    address: tokenContract.address,
+    abi: tokenContract.abi,
+    functionName: "creditToAsset",
+    args: [salt, 0], // temporarily set to 0,should use `minOutParsed`
+  });
 
-  // console.log("data:", data.toString());
+  console.log("data:", data.toString());
   //   console.log("data2:", formatEther(data));
   //   return `Price of 1 ${tokenName} is: ${formatEther(data)}`;
   // Temporary return text for testing purposes

@@ -140,7 +140,7 @@ export default async function buy(
   // Swap the SALT for the fruit tokens
 
   // Simulate the transaction before actually submitting it
-  const { request } = await publicClient.simulateContract({
+  const { request } = await client.simulateContract({
     account,
     address: "0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2",
     abi: wagmiAbi,

@@ -162,7 +162,7 @@ export default async function buy(
   const hash = await walletClient.writeContract(request);
 
   console.log("data:", hash.toString());
-  if (data) {
+  if (hash) {
     return `Successfully swapped ${salt} SALT for ${tokenName} `;
   }
   //   console.log("data2:", formatEther(data));

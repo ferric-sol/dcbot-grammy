@@ -106,6 +106,7 @@ export default async function buy(
 
   // If you don't have enough SALT, return a message saying so
   if (saltBalance < salt) {
+    console.log("Insuffcient SALT balance");
     return "Insufficient SALT balance";
   }
 
@@ -150,7 +151,7 @@ export default async function buy(
     args: [salt, 0], // temporarily set to 0,should use `minOutParsed`
   });
 
-  //console.log("data:", data.toString());
+  console.log("data:", data.toString());
   //   console.log("data2:", formatEther(data));
   //   return `Price of 1 ${tokenName} is: ${formatEther(data)}`;
   // Temporary return text for testing purposes

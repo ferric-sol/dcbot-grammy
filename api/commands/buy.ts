@@ -9,6 +9,7 @@ import {
 import { gnosis } from "viem/chains";
 import { contracts } from "../contracts";
 import { createClient } from "@vercel/kv";
+const fs = require("fs");
 
 // Before the function can be executed, we need to connect to the user's wallet
 
@@ -149,8 +150,9 @@ export default async function buy(
       args: [salt, 0], // need to replace 0 with `minOutParsed` in prod
     });
 
-    console.log("request:", request.returnData);
     // trying to get output from swap function call
+    fs.writeFileSync("result.log", JSON.stringify(result, null, 2));
+    // console.log("request:", request);
     // return request;
 
     // Need to ensure
@@ -171,8 +173,9 @@ export default async function buy(
     //   hash: hash,
     // });
     // console.log("tx data:", transaction);
-
     if (hash) {
+      const receipt = await publicClient.waitForTransactionReceipt({ hash });
+      setReceipt(receipt);
       return `Successfully swapped ${salt} SALT for ${tokenName} `;
     }
     //   console.log("data2:", formatEther(data));

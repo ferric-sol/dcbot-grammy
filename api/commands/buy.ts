@@ -9,7 +9,6 @@ import {
 import { gnosis } from "viem/chains";
 import { contracts } from "../contracts";
 import { createClient } from "@vercel/kv";
-const fs = require("fs");
 
 // Before the function can be executed, we need to connect to the user's wallet
 
@@ -151,7 +150,6 @@ export default async function buy(
     });
 
     // trying to get output from swap function call
-    fs.writeFileSync("result.log", JSON.stringify(result, null, 2));
     // console.log("request:", request);
     // return request;
 

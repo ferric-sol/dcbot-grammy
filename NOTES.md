@@ -10,10 +10,4 @@
 
 ## Left off
 
-### 23/11/11
-
-Ensuring the user has enough SALT before attempting the swap
-
-Details: wrong transaction nonce <-- Current error
-
-Have to figure out why the transaction nonce is incorrect, possibly need to provide it manually to the send transaction
+Need to get swap tx return data for return message on telegram

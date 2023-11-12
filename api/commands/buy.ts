@@ -145,7 +145,7 @@ export default async function buy(
     address: tokenContract.address,
     abi: tokenContract.abi,
     functionName: "creditToAsset",
-    args: [salt, 0],
+    args: [salt, 0], // need to replace 0 with `minOutParsed` in prod
   });
   //console.log("request:", request);
 
@@ -161,7 +161,7 @@ export default async function buy(
   //   args: [salt, 0], // temporarily set to 0,should use `minOutParsed`
   // });
   const hash = await client.writeContract(request);
-  console.log("data:", hash.toString());
+  console.log("hash:", hash.toString());
 
   // const transaction = await client.getTransactionReceipt({
   //   hash: hash,

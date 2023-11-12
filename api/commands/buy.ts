@@ -138,20 +138,33 @@ export default async function buy(
   }
 
   // Swap the SALT for the fruit tokens
-  // 0xa2212c6d <-- error code I was getting
+
+  // Simulate the transaction before actually submitting it
+  const { request } = await publicClient.simulateContract({
+    account,
+    address: "0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2",
+    abi: wagmiAbi,
+    functionName: "mint",
+  });
+  console.log("request:", request);
+
   // Need to ensure
   // 1. the contract is approved to take our SALT
   // 2. we have enough xDAI to pay for the transaction
   // 3. the `minOut` variable is acceptable
   // 4. the `salt` value is non-zero
-  const data = await client.writeContract({
-    address: tokenContract.address,
-    abi: tokenContract.abi,
-    functionName: "creditToAsset",
-    args: [salt, 0], // temporarily set to 0,should use `minOutParsed`
-  });
+  // const data = await client.writeContract({
+  //   address: tokenContract.address,
+  //   abi: tokenContract.abi,
+  //   functionName: "creditToAsset",
+  //   args: [salt, 0], // temporarily set to 0,should use `minOutParsed`
+  // });
+  const hash = await walletClient.writeContract(request);
 
-  console.log("data:", data.toString());
+  console.log("data:", hash.toString());
+  if (data) {
+    return `Successfully swapped ${salt} SALT for ${tokenName} `;
+  }
   //   console.log("data2:", formatEther(data));
   //   return `Price of 1 ${tokenName} is: ${formatEther(data)}`;
   // Temporary return text for testing purposes

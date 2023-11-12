@@ -142,9 +142,10 @@ export default async function buy(
   // Simulate the transaction before actually submitting it
   const { request } = await client.simulateContract({
     account,
-    address: "0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2",
-    abi: wagmiAbi,
-    functionName: "mint",
+    address: tokenContract.address,
+    abi: tokenContract.abi,
+    functionName: "creditToAsset",
+    args: [salt, 0],
   });
   console.log("request:", request);
 

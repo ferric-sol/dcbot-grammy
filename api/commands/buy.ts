@@ -149,9 +149,9 @@ export default async function buy(
       args: [salt, 0], // need to replace 0 with `minOutParsed` in prod
     });
 
-    //console.log("request:", request);
+    console.log("request:", request.returnData);
     // trying to get output from swap function call
-    return request;
+    // return request;
 
     // Need to ensure
     // 1. the contract is approved to take our SALT

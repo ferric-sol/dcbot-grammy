@@ -87,9 +87,15 @@ export default async function buy(
 
   // Use `price` to calculate min value out
   // 1e18 variable * 1e18 variable means you need to divide by 1e18 afterwards
+
   const salt =
     (parseInt(parseEther(amount.toString())) * parseInt(price)) / 1e18;
+  console.log("parsed price:", parseInt(price));
+  console.log("parsed ether:", parseEther(amount.toString()));
   console.log("salt in:", salt);
+  // To get amount of SALT if price of 1 Apple = 1.5 SALT
+  // /buy 3 Apple
+  // 3 x 1.5 = 4.5 <- amount of SALT needed to buy 3 Apples
 
   // Calculate minimum fruit token amount to receive (currently hard-coded to 90% of original value)
   const minOut = amount * 0.9;
@@ -128,8 +134,14 @@ export default async function buy(
 
   // If you are trying to give the fruit contract more SALT than you currently have approved it to take
   // we need to approve it to take the additional SALT
+
   if (salt > allowance) {
     // Approve the FRUIT contract to `transferFrom()` your SALT
+    console.log(
+      `Approving ${tokenName} Dex for ${
+        (tokenContract.address, salt - parseInt(allowance))
+      } SALT`
+    );
     const approveTx = await client.writeContract({
       address: saltContract.address,
       abi: saltContract.abi,
@@ -181,7 +193,13 @@ export default async function buy(
     //   hash: hash,
     // });
     // console.log("tx data:", transaction);
+<<<<<<< Updated upstream
       return `Successfully swapped ${formatEther(salt)} SALT for ${valueReceived} ${tokenName} `;
+=======
+    if (hash) {
+      const receipt = await client.waitForTransactionReceipt({ hash });
+      return `Successfully swapped ${salt} SALT for ${tokenName} `;
+>>>>>>> Stashed changes
     }
     //   console.log("data2:", formatEther(data));
     //   return `Price of 1 ${tokenName} is: ${formatEther(data)}`;

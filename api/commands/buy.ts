@@ -147,7 +147,7 @@ export default async function buy(
     functionName: "creditToAsset",
     args: [salt, 0],
   });
-  console.log("request:", request);
+  //console.log("request:", request);
 
   // Need to ensure
   // 1. the contract is approved to take our SALT
@@ -161,8 +161,13 @@ export default async function buy(
   //   args: [salt, 0], // temporarily set to 0,should use `minOutParsed`
   // });
   const hash = await client.writeContract(request);
-
   console.log("data:", hash.toString());
+
+  const transaction = await client.getTransactionReceipt({
+    hash: hash,
+  });
+  console.log("tx data:", transaction);
+
   if (hash) {
     return `Successfully swapped ${salt} SALT for ${tokenName} `;
   }

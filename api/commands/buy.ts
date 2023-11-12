@@ -163,10 +163,10 @@ export default async function buy(
   const hash = await client.writeContract(request);
   console.log("hash:", hash.toString());
 
-  // const transaction = await client.getTransactionReceipt({
-  //   hash: hash,
-  // });
-  // console.log("tx data:", transaction);
+  const transaction = await client.getTransactionReceipt({
+    hash: hash,
+  });
+  console.log("tx data:", transaction);
 
   if (hash) {
     return `Successfully swapped ${salt} SALT for ${tokenName} `;

@@ -178,7 +178,7 @@ export default async function buy(
     // Temporary return text for testing purposes
     return "Rohan Nero is the greatest";
   } catch (error) {
-    console.log("error:", error);
+    console.log("error:", error.message);
     return error.message;
   }
 }

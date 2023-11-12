@@ -24,7 +24,8 @@ const token = process.env.TELEGRAM_API_KEY;
 if (!token) throw new Error("BOT_TOKEN is unset");
 
 const bot = new Bot(token);
-export default webhookCallback(bot, "http");
+const timeoutMilliseconds = 60_000;
+export default webhookCallback(bot, "http", 'throw', timeoutMilliseconds);
 
 interface KeyPair {
   address: string;
@@ -61,7 +62,10 @@ const kv = createClient({
 
 // returns keypair for inputted username
 const getKeyPair = async (username: string): Promise<KeyPair | null> => {
-  return await kv.get(`user:${username}`);
+  console.log(`key: user:${username}`);
+  const keyPair = await kv.get(`user:${username}`);
+  console.log(`keyPair: ${JSON.stringify(keyPair)}`);
+  return keyPair as KeyPair;
 };
 
 // Initialize zupass menu

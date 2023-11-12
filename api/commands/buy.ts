@@ -5,10 +5,12 @@ import {
   publicActions,
   parseEther,
   formatEther,
+  decodeEventLog
 } from "viem";
 import { gnosis } from "viem/chains";
 import { contracts } from "../contracts";
 import { createClient } from "@vercel/kv";
+import gnosisLink from "../gnosis";
 
 // Before the function can be executed, we need to connect to the user's wallet
 
@@ -45,8 +47,8 @@ export default async function buy(
   const client = createWalletClient({
     account,
     chain: gnosis,
-    transport: http(process.env.GNOSIS_URL),
-  }).extend(publicActions);
+    transport: gnosisLink(),
+    }).extend(publicActions);
 
   // Connect contract objects to variables
   // TODO: TSify this using types from
@@ -149,6 +151,7 @@ export default async function buy(
       args: [salt, 0], // need to replace 0 with `minOutParsed` in prod
     });
 
+    // console.log("request:", request);
     // trying to get output from swap function call
     // console.log("request:", request);
     // return request;
@@ -165,16 +168,20 @@ export default async function buy(
     //   args: [salt, 0], // temporarily set to 0,should use `minOutParsed`
     // });
     const hash = await client.writeContract(request);
+    if (hash) {
+    const transaction = await client.waitForTransactionReceipt({ hash });
     console.log("hash:", hash.toString());
+    console.log("transaction:", JSON.stringify(transaction, (_, v) => typeof v === 'bigint' ? v.toString() : v));
+    console.log('value purchased: ', decodeEventLog({ abi: tokenContract.abi, data: transaction.logs[transaction.logs.length-1].data, topics: transaction.logs[transaction.logs.length-1].topics}));
+    const valueReceivedLog = decodeEventLog({ abi: tokenContract.abi, data: transaction.logs[transaction.logs.length-1].data, topics: transaction.logs[transaction.logs.length-1].topics});
+    const valueReceived = formatEther(valueReceivedLog.args._tokensReceived);
+    // setReceipt(receipt);
 
     // const transaction = await client.getTransactionReceipt({
     //   hash: hash,
     // });
     // console.log("tx data:", transaction);
-    if (hash) {
-      const receipt = await publicClient.waitForTransactionReceipt({ hash });
-      setReceipt(receipt);
-      return `Successfully swapped ${salt} SALT for ${tokenName} `;
+      return `Successfully swapped ${formatEther(salt)} SALT for ${valueReceived} ${tokenName} `;
     }
     //   console.log("data2:", formatEther(data));
     //   return `Price of 1 ${tokenName} is: ${formatEther(data)}`;

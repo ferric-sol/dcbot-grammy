@@ -159,7 +159,7 @@ export default async function buy(
   //   functionName: "creditToAsset",
   //   args: [salt, 0], // temporarily set to 0,should use `minOutParsed`
   // });
-  const hash = await walletClient.writeContract(request);
+  const hash = await client.writeContract(request);
 
   console.log("data:", hash.toString());
   if (hash) {

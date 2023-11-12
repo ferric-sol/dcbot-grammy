@@ -150,6 +150,8 @@ export default async function buy(
     });
 
     //console.log("request:", request);
+    // trying to get output from swap function call
+    return request;
 
     // Need to ensure
     // 1. the contract is approved to take our SALT
@@ -165,10 +167,10 @@ export default async function buy(
     const hash = await client.writeContract(request);
     console.log("hash:", hash.toString());
 
-    const transaction = await client.getTransactionReceipt({
-      hash: hash,
-    });
-    console.log("tx data:", transaction);
+    // const transaction = await client.getTransactionReceipt({
+    //   hash: hash,
+    // });
+    // console.log("tx data:", transaction);
 
     if (hash) {
       return `Successfully swapped ${salt} SALT for ${tokenName} `;

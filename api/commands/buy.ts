@@ -140,39 +140,44 @@ export default async function buy(
   // Swap the SALT for the fruit tokens
 
   // Simulate the transaction before actually submitting it
-  const { request } = await client.simulateContract({
-    account,
-    address: tokenContract.address,
-    abi: tokenContract.abi,
-    functionName: "creditToAsset",
-    args: [salt, 0], // need to replace 0 with `minOutParsed` in prod
-  });
-  //console.log("request:", request);
+  try {
+    const { request } = await client.simulateContract({
+      account,
+      address: tokenContract.address,
+      abi: tokenContract.abi,
+      functionName: "creditToAsset",
+      args: [salt, 0], // need to replace 0 with `minOutParsed` in prod
+    });
 
-  // Need to ensure
-  // 1. the contract is approved to take our SALT
-  // 2. we have enough xDAI to pay for the transaction
-  // 3. the `minOut` variable is acceptable
-  // 4. the `salt` value is non-zero
-  // const data = await client.writeContract({
-  //   address: tokenContract.address,
-  //   abi: tokenContract.abi,
-  //   functionName: "creditToAsset",
-  //   args: [salt, 0], // temporarily set to 0,should use `minOutParsed`
-  // });
-  const hash = await client.writeContract(request);
-  console.log("hash:", hash.toString());
+    //console.log("request:", request);
 
-  const transaction = await client.getTransactionReceipt({
-    hash: hash,
-  });
-  console.log("tx data:", transaction);
+    // Need to ensure
+    // 1. the contract is approved to take our SALT
+    // 2. we have enough xDAI to pay for the transaction
+    // 3. the `minOut` variable is acceptable
+    // 4. the `salt` value is non-zero
+    // const data = await client.writeContract({
+    //   address: tokenContract.address,
+    //   abi: tokenContract.abi,
+    //   functionName: "creditToAsset",
+    //   args: [salt, 0], // temporarily set to 0,should use `minOutParsed`
+    // });
+    const hash = await client.writeContract(request);
+    console.log("hash:", hash.toString());
 
-  if (hash) {
-    return `Successfully swapped ${salt} SALT for ${tokenName} `;
+    const transaction = await client.getTransactionReceipt({
+      hash: hash,
+    });
+    console.log("tx data:", transaction);
+
+    if (hash) {
+      return `Successfully swapped ${salt} SALT for ${tokenName} `;
+    }
+    //   console.log("data2:", formatEther(data));
+    //   return `Price of 1 ${tokenName} is: ${formatEther(data)}`;
+    // Temporary return text for testing purposes
+    return "Rohan Nero is the greatest";
+  } catch (error) {
+    console.log("error:", error);
   }
-  //   console.log("data2:", formatEther(data));
-  //   return `Price of 1 ${tokenName} is: ${formatEther(data)}`;
-  // Temporary return text for testing purposes
-  return "Rohan Nero is the greatest";
 }

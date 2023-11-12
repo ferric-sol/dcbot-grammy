@@ -11,3 +11,5 @@
 ## Left off
 
 Need to get swap tx return data for return message on telegram
+
+vm execute error on simulate tx

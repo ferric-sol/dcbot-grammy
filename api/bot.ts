@@ -10,14 +10,14 @@ import getPrice from "./commands/price";
 // import zupass from "./commands/zupass";
 import buy from "./commands/buy";
 import sell from "./commands/sell";
-import { zupass_menu, handle_zuconnect } from "./commands/start"
+import { zupass_menu, handle_zuconnect } from "./commands/start";
 
 const token = process.env.TELEGRAM_API_KEY;
 if (!token) throw new Error("BOT_TOKEN is unset");
 
 const bot = new Bot(token);
 const timeoutMilliseconds = 60_000;
-export default webhookCallback(bot, "http", 'throw', timeoutMilliseconds);
+export default webhookCallback(bot, "http", "throw", timeoutMilliseconds);
 
 interface KeyPair {
   address: string;
@@ -78,6 +78,38 @@ bot.command("price", async (ctx) => {
   const price = tokenName ? await getPrice(tokenName) : null;
   if (price) {
     ctx.reply(price);
+  } else {
+    ctx.reply(`Price not found for ${tokenName}`);
+  }
+});
+
+// Returns the prices of all fruit tokens
+// bot.command("prices", async (ctx) => {
+//   const tokenName = ctx.message?.text
+//     .replace("/prices", "")
+//     .replace("@DCFruitBot", "")
+//     .trim();
+//   const price = tokenName ? await getPrices(tokenName) : null;
+//   if (price) {
+//     ctx.reply(price);
+//   } else {
+//     ctx.reply(`Price not found for ${tokenName}`);
+//   }
+// });
+bot.command("prices", async (ctx) => {
+  const tokenName = ctx.message?.text
+    .replace("/prices", "")
+    .replace("@DCFruitBot", "")
+    .trim();
+  const fruit = [Apple, Avocado, Banana, Lemon, Strawberry, Tomato];
+  let priceArray = [];
+  fruit.forEach((element) => {
+    console.log("element:", element);
+    const price = await getPrice(element);
+    priceArray.push(price);
+  });
+  if (priceArray.length > 0) {
+    ctx.reply(priceArray);
   } else {
     ctx.reply(`Price not found for ${tokenName}`);
   }

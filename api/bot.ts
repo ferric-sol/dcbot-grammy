@@ -101,7 +101,7 @@ bot.command("prices", async (ctx) => {
     .replace("/prices", "")
     .replace("@DCFruitBot", "")
     .trim();
-  const fruit = [Apple, Avocado, Banana, Lemon, Strawberry, Tomato];
+  const fruit = ["Apple", "Avocado", "Banana", "Lemon", "Strawberry", "Tomato"];
   let priceArray = [];
   fruit.forEach((element) => {
     console.log("element:", element);

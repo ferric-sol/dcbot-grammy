@@ -19,6 +19,7 @@ import getBalance from "./commands/balance";
 import getPrice from "./commands/price";
 // import zupass from "./commands/zupass";
 import buy from "./commands/buy";
+import sell from "./commands/sell";
 
 const token = process.env.TELEGRAM_API_KEY;
 if (!token) throw new Error("BOT_TOKEN is unset");
@@ -220,6 +221,38 @@ bot.command("buy", async (ctx) => {
       await ctx.reply(buyData[1]);
     } else {
       ctx.reply(buyData);
+    }
+  } else {
+    ctx.reply(`Price not found for ${inputSplit[1]}`);
+  }
+});
+
+// sell x amount of any fruit token
+bot.command("sell", async (ctx) => {
+  // Parse and pass username
+  const username = ctx.from?.username?.toString();
+  if (!username) {
+    ctx.reply("No username");
+    return;
+  }
+
+  // Parse and pass input
+  const input = ctx.message?.text
+    .replace("/sell", "")
+    .replace("@DCFruitBot", "")
+    .trim();
+  const inputSplit = input.split(" ");
+  console.log("input:", input);
+  console.log("inputSplit:", inputSplit);
+  const sellData = input
+    ? await sell(inputSplit[1], inputSplit[0], username)
+    : null;
+  if (sellData) {
+    if (sellData.length == 2) {
+      await ctx.reply(sellData[0]);
+      await ctx.reply(sellData[1]);
+    } else {
+      ctx.reply(sellData);
     }
   } else {
     ctx.reply(`Price not found for ${inputSplit[1]}`);

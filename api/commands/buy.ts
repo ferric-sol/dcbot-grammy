@@ -28,18 +28,10 @@ export default async function buy(
   amount: number,
   username: string
 ) {
-  console.log("buy script input:");
-  console.log("tokenName:", tokenName);
-  console.log("amount:", amount);
-  console.log("username:", username);
-
   // Connect to the user's wallet
   const keys = await kv.get(`user:${username}`);
-  console.log("keys:", keys);
-  console.log("priv key:", keys.privateKey);
 
   const account = privateKeyToAccount(keys.privateKey);
-  console.log("account:", account);
   const dexContractName: string = `BasicDex${tokenName}`;
   console.log("dexContractName:", dexContractName);
 
@@ -59,7 +51,6 @@ export default async function buy(
   try {
     tokenContract = (contracts as any)[`${dexContractName}`];
     saltContract = (contracts as any)["SaltToken"];
-    //console.log("tokenContract:", tokenContract);
   } catch (error) {
     console.log("error:", error);
   }
@@ -68,14 +59,6 @@ export default async function buy(
     //throw new Error(`Token ${tokenName} not found in contracts`);
     return `Token "${tokenName}" not found in contracts`;
   }
-
-  /** Example Flow
-   *  1. /buy 5 = You want 5 FRUIT for x SALT
-   *  2. get price = .5 (1 SALT = 2 FRUIT)
-   *  3. ensure you have enough SALT to pay for it (balanceOf)
-   *  4. ensure you have approved fruit DEX to take the tokens, if not then approve it
-   *  5. swap tokens(salt amount, min fruit out) = (5 * .5, 5 * .9) <-- 90% slippage protection
-   */
 
   // Get price of fruit token
   const price = await client.readContract({
@@ -94,9 +77,6 @@ export default async function buy(
   console.log("parsed price:", parseInt(price));
   console.log("parsed ether:", parseEther(amount.toString()));
   console.log("salt in:", salt);
-  // To get amount of SALT if price of 1 Apple = .75 SALT
-  // /buy 1 Apple
-  // 1 x .75 = .75 <- amount of SALT needed to buy 3 Apples
 
   // Calculate minimum fruit token amount to receive (currently hard-coded to 90% of original value)
   const minOut = amount * 0.9;
@@ -152,10 +132,8 @@ export default async function buy(
     console.log("approveTx:", approveTx);
   }
 
-  // Swap the SALT for the fruit tokens
-
-  // Simulate the transaction before actually submitting it
   try {
+    // Simulate the transaction before actually sending it
     const { request } = await client.simulateContract({
       account,
       address: tokenContract.address,
@@ -164,24 +142,9 @@ export default async function buy(
       args: [salt, minOutParsed],
     });
 
-    // console.log("request:", request);
-    // trying to get output from swap function call
-    // console.log("request:", request);
-    // return request;
-
-    // Need to ensure
-    // 1. the contract is approved to take our SALT
-    // 2. we have enough xDAI to pay for the transaction
-    // 3. the `minOut` variable is acceptable
-    // 4. the `salt` value is non-zero
-    // const data = await client.writeContract({
-    //   address: tokenContract.address,
-    //   abi: tokenContract.abi,
-    //   functionName: "creditToAsset",
-    //   args: [salt, 0], // temporarily set to 0,should use `minOutParsed`
-    // });
+    // Send the transaction
     const hash = await client.writeContract(request);
-    // if tx went through view the receipt for amount of fruit token received
+    // if the tx went through view the receipt for amount of fruit token received
     if (hash) {
       const transaction = await client.waitForTransactionReceipt({ hash });
       console.log("hash:", hash.toString());
@@ -205,12 +168,7 @@ export default async function buy(
         topics: transaction.logs[transaction.logs.length - 1].topics,
       });
       const valueReceived = formatEther(valueReceivedLog.args._tokensReceived);
-      // setReceipt(receipt);
 
-      // const transaction = await client.getTransactionReceipt({
-      //   hash: hash,
-      // });
-      // console.log("tx data:", transaction);
       return [
         `Successfully swapped ${formatEther(
           salt

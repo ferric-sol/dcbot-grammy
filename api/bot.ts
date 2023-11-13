@@ -24,7 +24,9 @@ const token = process.env.TELEGRAM_API_KEY;
 if (!token) throw new Error("BOT_TOKEN is unset");
 
 const bot = new Bot(token);
-export default webhookCallback(bot, "http");
+// export default webhookCallback(bot, "http");
+const timeoutMilliseconds = 60_000;
+export default webhookCallback(bot, "http", "throw", timeoutMilliseconds);
 
 interface KeyPair {
   address: string;
@@ -213,7 +215,12 @@ bot.command("buy", async (ctx) => {
     ? await buy(inputSplit[1], inputSplit[0], username)
     : null;
   if (buyData) {
-    ctx.reply(buyData);
+    if (buyData.length == 2) {
+      await ctx.reply(buyData[0]);
+      await ctx.reply(buyData[1]);
+    } else {
+      ctx.reply(buyData);
+    }
   } else {
     ctx.reply(`Price not found for ${inputSplit[1]}`);
   }

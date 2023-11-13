@@ -10,7 +10,7 @@ import {
 import { gnosis } from "viem/chains";
 import { contracts } from "../contracts";
 import { createClient } from "@vercel/kv";
-// import gnosisLink from "../gnosis";
+import gnosisLink from "../gnosis";
 
 // Before the function can be executed, we need to connect to the user's wallet
 
@@ -47,8 +47,8 @@ export default async function buy(
   const client = createWalletClient({
     account,
     chain: gnosis,
-    // transport: gnosisLink()
-    transport: http(process.env.GNOSIS_URL),
+    transport: gnosisLink(),
+    // transport: http(process.env.GNOSIS_URL),
   }).extend(publicActions);
 
   // Connect contract objects to variables
@@ -81,7 +81,7 @@ export default async function buy(
   const price = await client.readContract({
     address: tokenContract.address,
     abi: tokenContract.abi,
-    functionName: "creditInPrice",
+    functionName: "assetInPrice",
     args: [parseEther("1")],
   });
   console.log("price:", price);
@@ -94,9 +94,9 @@ export default async function buy(
   console.log("parsed price:", parseInt(price));
   console.log("parsed ether:", parseEther(amount.toString()));
   console.log("salt in:", salt);
-  // To get amount of SALT if price of 1 Apple = 1.5 SALT
-  // /buy 3 Apple
-  // 3 x 1.5 = 4.5 <- amount of SALT needed to buy 3 Apples
+  // To get amount of SALT if price of 1 Apple = .75 SALT
+  // /buy 1 Apple
+  // 1 x .75 = .75 <- amount of SALT needed to buy 3 Apples
 
   // Calculate minimum fruit token amount to receive (currently hard-coded to 90% of original value)
   const minOut = amount * 0.9;
@@ -161,7 +161,7 @@ export default async function buy(
       address: tokenContract.address,
       abi: tokenContract.abi,
       functionName: "creditToAsset",
-      args: [salt, 0], // need to replace 0 with `minOutParsed` in prod
+      args: [salt, minOutParsed],
     });
 
     // console.log("request:", request);

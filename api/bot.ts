@@ -142,7 +142,9 @@ bot.command("buy", async (ctx) => {
     ? await buy(inputSplit[1], inputSplit[0], username)
     : null;
   if (buyData) {
-    ctx.reply(buyData);
+    //ctx.reply(buyData);
+    await ctx.reply(buyData[0]);
+    await ctx.reply(buyData[1]);
   } else {
     ctx.reply(`Price not found for ${inputSplit[1]}`);
   }
@@ -156,7 +158,6 @@ bot.command("sell", async (ctx) => {
     ctx.reply("No username");
     return;
   }
-
   // Parse and pass input
   const input = ctx.message?.text
     .replace("/sell", "")

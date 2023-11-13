@@ -78,8 +78,8 @@ export default async function buy(
   console.log("parsed ether:", parseEther(amount.toString()));
   console.log("salt in:", salt);
 
-  // Calculate minimum fruit token amount to receive (currently hard-coded to 90% of original value)
-  const minOut = amount * 0.9;
+  // Calculate minimum fruit token amount to receive (currently hard-coded to 95% of original value which is 5% slippage)
+  const minOut = amount * 0.95;
   console.log("minOut:", minOut);
   const minOutParsed = parseEther(minOut.toString());
   console.log("minOutParsed:", minOutParsed);
@@ -176,10 +176,6 @@ export default async function buy(
         `Transaction hash: ${hash}`,
       ];
     }
-    //   console.log("data2:", formatEther(data));
-    //   return `Price of 1 ${tokenName} is: ${formatEther(data)}`;
-    // Temporary return text for testing purposes
-    return "Rohan Nero is the greatest";
   } catch (error) {
     console.log("error:", error.message);
     return error.message;

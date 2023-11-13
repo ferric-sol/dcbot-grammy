@@ -17,12 +17,16 @@ import { ArgumentTypeName } from "@pcd/pcd-types";
 import { SemaphoreIdentityPCDPackage } from "@pcd/semaphore-identity-pcd";
 import getBalance from "./commands/balance";
 import getPrice from "./commands/price";
+// import zupass from "./commands/zupass";
+import buy from "./commands/buy";
 
 const token = process.env.TELEGRAM_API_KEY;
 if (!token) throw new Error("BOT_TOKEN is unset");
 
 const bot = new Bot(token);
-export default webhookCallback(bot, "http");
+// export default webhookCallback(bot, "http");
+const timeoutMilliseconds = 60_000;
+export default webhookCallback(bot, "http", "throw", timeoutMilliseconds);
 
 interface KeyPair {
   address: string;
@@ -45,22 +49,27 @@ if (
 
 const transport = http(GNOSIS_URL);
 
+// Connect client to gnosis chain
 const client = createPublicClient({
   chain: gnosis,
   transport,
 });
 
+// Initialize kv database
 const kv = createClient({
   url: KV_REST_API_URL,
   token: KV_REST_API_TOKEN,
 });
 
+// returns keypair for inputted username
 const getKeyPair = async (username: string): Promise<KeyPair | null> => {
   return await kv.get(`user:${username}`);
 };
 
+// Initialize zupass menu
 const menu = new Menu("zupass");
 
+// Define EdDSA fields that will be exposed
 const fieldsToReveal: EdDSATicketFieldsToReveal = {
   revealTicketId: false,
   revealEventId: false,
@@ -72,6 +81,7 @@ const fieldsToReveal: EdDSATicketFieldsToReveal = {
   revealIsRevoked: false,
 };
 
+// Define ZK edDSA PCD arguments
 const args: ZKEdDSAEventTicketPCDArgs = {
   ticket: {
     argumentType: ArgumentTypeName.PCD,
@@ -118,6 +128,7 @@ const args: ZKEdDSAEventTicketPCDArgs = {
   },
 };
 
+// Set menu variables
 menu.dynamic(async (ctx) => {
   const range = new MenuRange();
   // const appUrl = `${process.env.VERCEL_URL}`;
@@ -145,13 +156,17 @@ menu.dynamic(async (ctx) => {
   return range;
 });
 
+// Zupass command with ZK proof
+// Commented out code was moved to `./commands/zupass.ts`
 bot.use(menu);
 bot.command("zupass", async (ctx) => {
   console.log("in zupass");
   console.log("menu: ", menu);
   // Send the menu.
   if (ctx.from?.id) {
-    ctx.reply("Validate your proof and then use the menu to play:", {reply_markup: menu });
+    ctx.reply("Validate your proof and then use the menu to play:", {
+      reply_markup: menu,
+    });
     // TODO: Figure out why this doesn't work
     // await bot.api.sendMessage(
     //   ctx.chat?.id,
@@ -159,23 +174,59 @@ bot.command("zupass", async (ctx) => {
     //   { reply_markup: menu }
     // );
   }
+  //await zupass();
 });
 
+// Command to start the bot
 bot.command("start", (ctx) => ctx.reply("Welcome! Up and running."));
 
+// Returns the price of a fruit token
 bot.command("price", async (ctx) => {
   const tokenName = ctx.message?.text
     .replace("/price", "")
     .replace("@DCFruitBot", "")
     .trim();
   const price = tokenName ? await getPrice(tokenName) : null;
-  if(price) {
+  if (price) {
     ctx.reply(price);
   } else {
     ctx.reply(`Price not found for ${tokenName}`);
   }
 });
 
+// Buy x amount of any fruit token
+bot.command("buy", async (ctx) => {
+  // Parse and pass username
+  const username = ctx.from?.username?.toString();
+  if (!username) {
+    ctx.reply("No username");
+    return;
+  }
+
+  // Parse and pass input
+  const input = ctx.message?.text
+    .replace("/buy", "")
+    .replace("@DCFruitBot", "")
+    .trim();
+  const inputSplit = input.split(" ");
+  console.log("input:", input);
+  console.log("inputSplit:", inputSplit);
+  const buyData = input
+    ? await buy(inputSplit[1], inputSplit[0], username)
+    : null;
+  if (buyData) {
+    if (buyData.length == 2) {
+      await ctx.reply(buyData[0]);
+      await ctx.reply(buyData[1]);
+    } else {
+      ctx.reply(buyData);
+    }
+  } else {
+    ctx.reply(`Price not found for ${inputSplit[1]}`);
+  }
+});
+
+// Returns the user's balance in SALT
 bot.command("balance", async (ctx) => {
   const ethAddressOrEns = ctx.message?.text
     .replace("/balance", "")
@@ -192,21 +243,9 @@ bot.command("balance", async (ctx) => {
   }
 });
 
-bot.command("balanceaddr", async (ctx) => {
-  const ethAddress = ctx.message?.text
-    .replace("/balanceaddr", "")
-    .replace("@DCFruitBot", "")
-    .trim();
-  const keyPair = ctx.from?.username
-    ? await getKeyPair(ctx.from?.username?.toString())
-    : null;
-  if (ethAddress) {
-    ctx.reply(await returnBalance(ethAddress));
-  } else if (keyPair?.address) {
-    ctx.reply(await returnBalance(keyPair?.address));
-  }
-});
-
+// Generates the user a keypair
+// Public address is sent to user directly
+// Private key is stored in kv store db
 bot.command("generate", async (ctx) => {
   console.log("from:", ctx.from);
   const username = ctx.from?.username?.toString();
@@ -238,23 +277,3 @@ bot.command("generate", async (ctx) => {
     console.error("Error sending message:", error);
   }
 });
-
-async function returnBalance(ethAddress: string) {
-  if (!ethAddress || !isAddress(ethAddress)) {
-    const message = "Address not understood";
-    return message;
-  }
-
-  try {
-    const balanceWei = await client.getBalance({ address: ethAddress });
-    const balanceEth = formatEther(balanceWei);
-
-    const balanceWeiNumber = Number(balanceWei);
-    const message = `✅ The balance for address: *"${ethAddress}"* is ${balanceEth} xDAI\nHave a great day! 👋🏻`;
-    return message;
-  } catch (error) {
-    console.error(error);
-    const message = "Error fetching balance";
-    return message;
-  }
-}

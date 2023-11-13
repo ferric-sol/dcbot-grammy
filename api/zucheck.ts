@@ -134,7 +134,9 @@ export async function GET(request: Request, res: Response) {
         `verified_user:${telegram_username}`
       )) as number;
 
-      const TEN_MINUTES_IN_MS = process.env.DRIP_TIMEOUT ? parseInt(process.env.DRIP_TIMEOUT) : 10 * 60 * 1000; // 10 minutes in milliseconds
+      const TEN_MINUTES_IN_MS = process.env.DRIP_TIMEOUT
+        ? parseInt(process.env.DRIP_TIMEOUT)
+        : 10 * 60 * 1000; // 10 minutes in milliseconds
 
       // Assuming pcd.claim is a timestamp
       const claimTimestamp = parseInt(watermark);
@@ -146,10 +148,10 @@ export async function GET(request: Request, res: Response) {
       if (Date.now() - last_drip >= TEN_MINUTES_IN_MS) {
         console.log("last_drip is 10 minutes after pcd.claim");
 
-        // Drip funds from the faucet to this user's address
+        // Drip funds from the faucet to this user's address in terms of SALT (credits)
         const FAUCET_AMOUNT = ".01";
 
-        if(!process.env.FRUITBOT_FAUCET_KEY) return false;
+        if (!process.env.FRUITBOT_FAUCET_KEY) return false;
 
         // Get the faucet EOA account
         const account = privateKeyToAccount(
@@ -177,7 +179,7 @@ export async function GET(request: Request, res: Response) {
           address: "0x2A1367AC5F5391C02eca422aFECfCcEC1967371D",
           abi: abi,
           functionName: "transfer",
-          args: [user.address, dripAmount]
+          args: [user.address, dripAmount],
         });
         console.log("reached");
 

@@ -1,7 +1,13 @@
 import { privateKeyToAccount } from "viem/accounts";
-import { createWalletClient, http, publicActions, parseEther, formatEther } from "viem";
+import {
+  createWalletClient,
+  http,
+  publicActions,
+  parseEther,
+  formatEther,
+} from "viem";
 import { gnosis } from "viem/chains";
-import { contracts } from "../contracts"
+import { contracts } from "../contracts";
 
 export default async function getPrice(tokenName: string) {
   try {

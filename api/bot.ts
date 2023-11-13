@@ -109,7 +109,13 @@ bot.command("prices", async (ctx) => {
     priceArray.push(price);
   }
   if (priceArray.length > 0) {
-    ctx.reply(priceArray);
+    // ctx.reply(priceArray);
+    await ctx.reply(priceArray[0]);
+    await ctx.reply(priceArray[1]);
+    await ctx.reply(priceArray[2]);
+    await ctx.reply(priceArray[3]);
+    await ctx.reply(priceArray[4]);
+    await ctx.reply(priceArray[5]);
   } else {
     ctx.reply(`Price not found for ${tokenName}`);
   }

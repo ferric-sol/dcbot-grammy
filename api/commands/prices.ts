@@ -20,7 +20,7 @@ export default async function getPrices(tokenName: string) {
     const fruit = [Apple, Avocado, Banana, Lemon, Strawberry, Tomato];
 
     // Loop through the kv store to get the most recent fruit prices
-    for (const i; i <= fruit.length; i++) {
+    for (let i; i <= fruit.length; i++) {
       //const price = await kv.get(`user:${username}`);
       //console.log(`${fruit[i]} Price: ${price}`);
     }

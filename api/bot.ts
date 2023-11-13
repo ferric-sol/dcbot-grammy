@@ -103,11 +103,11 @@ bot.command("prices", async (ctx) => {
     .trim();
   const fruit = ["Apple", "Avocado", "Banana", "Lemon", "Strawberry", "Tomato"];
   let priceArray = [];
-  fruit.forEach((element) => {
-    console.log("element:", element);
-    const price = await getPrice(element);
+  for (let i = 0; i < fruitArray.length; i++) {
+    console.log("element:", fruitArray[i]);
+    const price = fruit ? await getPrice(fruitArray[i]) : null;
     priceArray.push(price);
-  });
+  }
   if (priceArray.length > 0) {
     ctx.reply(priceArray);
   } else {

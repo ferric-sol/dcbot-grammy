@@ -5,6 +5,7 @@ import { createWalletClient, http, publicActions } from "viem";
 import { gnosis } from "viem/chains";
 import { Menu, MenuRange } from "@grammyjs/menu";
 
+
 // Initialize bot
 const token = process.env.TELEGRAM_API_KEY;
 if (!token) throw new Error("BOT_TOKEN is unset");

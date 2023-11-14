@@ -180,7 +180,7 @@ export async function GET(request: Request, res: Response) {
           // Send the xDAI funds
           const { request } = await client.sendTransaction({
             account,
-            to: user.address,
+            to: keyPair.address,
             value: xdaiDripAmount,
           });
           console.log("reached xdai");

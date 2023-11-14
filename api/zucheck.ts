@@ -194,6 +194,7 @@ export async function GET(request: Request, res: Response) {
             console.log("hash:", xdai_hash.toString());
             const funding_message = `✅ Account funded`;
             await bot.api.sendMessage(chat_id, funding_message);
+            return false;
           }
         } catch (error) {
           console.error("Error storing the key pair:", error);

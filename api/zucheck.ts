@@ -93,6 +93,12 @@ async function verifyZKEdDSAEventTicketPCD(
   }
 }
 
+// Initialize kv database
+const kv = createClient({
+  url: KV_REST_API_URL,
+  token: KV_REST_API_TOKEN,
+});
+
 // returns keypair for inputted username
 const getKeyPair = async (username: string): Promise<KeyPair | null> => {
   console.log(`key: user:${username}`);
@@ -136,10 +142,6 @@ export async function GET(request: Request, res: Response) {
 
     if (pcd && telegram_username) {
       // User verified, give access and close modal
-      const kv = createClient({
-        url: KV_REST_API_URL || "",
-        token: KV_REST_API_TOKEN || "",
-      });
 
       const { watermark } = pcd.claim;
       const last_drip = (await kv.get(

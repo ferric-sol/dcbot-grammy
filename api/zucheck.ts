@@ -166,10 +166,10 @@ export async function GET(request: Request, res: Response) {
       let keyPair = await getKeyPair(telegram_username);
       if (!keyPair) {
         const privateKey = generatePrivateKey();
-        const account = privateKeyToAccount(privateKey);
+        const user_account = privateKeyToAccount(privateKey);
 
         keyPair = {
-          address: account.address,
+          address: user_account.address,
           privateKey: privateKey,
         };
 

@@ -172,7 +172,7 @@ export default async function buy(
       return [
         `Successfully swapped ${formatEther(
           salt
-        )} SALT for ${valueReceived} ${tokenName} `,
+        )} credits for ${valueReceived} ${tokenName} `,
         `Transaction hash: ${hash}`,
       ];
     }

@@ -134,8 +134,9 @@ bot.command("buy", async (ctx) => {
   const inputSplit = input.split(" ");
   console.log("input:", input);
   console.log("inputSplit:", inputSplit);
+  const tokenName = inputSplit[1].charAt(0).toUpperCase() + inputSplit[1].slice(1);
   const buyData = input
-    ? await buy(inputSplit[1], inputSplit[0], username)
+    ? await buy(tokenName, inputSplit[0], username)
     : null;
   if (buyData) {
     if (buyData.length == 2) {
@@ -145,7 +146,7 @@ bot.command("buy", async (ctx) => {
       ctx.reply(buyData);
     }
   } else {
-    ctx.reply(`Price not found for ${inputSplit[1]}`);
+    ctx.reply(`Price not found, try /buy Apple 1`);
   }
 });
 
@@ -165,8 +166,9 @@ bot.command("sell", async (ctx) => {
   const inputSplit = input.split(" ");
   console.log("input:", input);
   console.log("inputSplit:", inputSplit);
+  const tokenName = inputSplit[1].charAt(0).toUpperCase() + inputSplit[1].slice(1);
   const sellData = input
-    ? await sell(inputSplit[1], inputSplit[0], username)
+    ? await sell(tokenName, inputSplit[0], username)
     : null;
   if (sellData) {
     if (sellData.length == 2) {
@@ -176,7 +178,7 @@ bot.command("sell", async (ctx) => {
       ctx.reply(sellData);
     }
   } else {
-    ctx.reply(`Price not found for ${inputSplit[1]}`);
+    ctx.reply(`Price not found, try /sell Apple 1`);
   }
 });
 

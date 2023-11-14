@@ -10,12 +10,16 @@ import { abi } from "../abi/xDAI";
 import { createWalletClient, http, publicActions, parseEther } from "viem";
 import { gnosis } from "viem/chains";
 import { privateKeyToAccount } from "viem/accounts";
+import { generatePrivateKey } from "viem/accounts";
 
 const { KV_REST_API_URL, KV_REST_API_TOKEN, GNOSIS_URL, TELEGRAM_API_KEY } =
   process.env;
 
 const token = process.env.TELEGRAM_API_KEY;
 if (!token) throw new Error("BOT_TOKEN is unset");
+// Drip funds from the faucet to this user's address in terms of SALT (credits)
+const CREDIT_FAUCET_AMOUNT = "1";
+const XDAI_FAUCET_AMOUNT = ".1";
 
 const bot = new Bot(token);
 
@@ -89,6 +93,14 @@ async function verifyZKEdDSAEventTicketPCD(
   }
 }
 
+// returns keypair for inputted username
+const getKeyPair = async (username: string): Promise<KeyPair | null> => {
+  console.log(`key: user:${username}`);
+  const keyPair = await kv.get(`user:${username}`);
+  console.log(`keyPair: ${JSON.stringify(keyPair)}`);
+  return keyPair as KeyPair;
+};
+
 export async function GET(request: Request, res: Response) {
   const { searchParams } = new URL(request.url);
   try {
@@ -133,6 +145,50 @@ export async function GET(request: Request, res: Response) {
       const last_drip = (await kv.get(
         `verified_user:${telegram_username}`
       )) as number;
+      
+      if (!process.env.FRUITBOT_FAUCET_KEY) return false;
+
+      // Get the faucet EOA account
+      const account = privateKeyToAccount(
+        `0x${process.env.FRUITBOT_FAUCET_KEY}`
+      );
+      //console.log("account:", account);
+
+      // Initialize the viem client
+      const client = createWalletClient({
+        account,
+        chain: gnosis,
+        transport: http(process.env.GNOSIS_URL),
+      }).extend(publicActions);
+
+      let keyPair = await getKeyPair(telegram_username);
+      if (!keyPair) {
+        const privateKey = generatePrivateKey();
+        const account = privateKeyToAccount(privateKey);
+
+        keyPair = {
+          address: account.address,
+          privateKey: privateKey,
+        };
+
+        try {
+          await kv.set(`user:${telegram_username}`, JSON.stringify(keyPair));
+          const xdaiDripAmount = parseEther(XDAI_FAUCET_AMOUNT);
+
+          // Send the xDAI funds
+          const { request } = await client.sendTransaction({
+            account,
+            to: user.address,
+            value: xdaiDripAmount,
+          });
+          console.log("reached xdai");
+          const message = `✅ Key pair generated successfully:\n- Address: ${keyPair.address}`;
+          bot.api.sendMessage(chat_id, message);
+        } catch (error) {
+          console.error("Error storing the key pair:", error);
+        }
+      }
+
 
       const TEN_MINUTES_IN_MS = process.env.DRIP_TIMEOUT
         ? parseInt(process.env.DRIP_TIMEOUT)
@@ -148,32 +204,15 @@ export async function GET(request: Request, res: Response) {
       if (Date.now() - last_drip >= TEN_MINUTES_IN_MS) {
         console.log("last_drip is 10 minutes after pcd.claim");
 
-        // Drip funds from the faucet to this user's address in terms of SALT (credits)
-        const FAUCET_AMOUNT = ".01";
-
-        if (!process.env.FRUITBOT_FAUCET_KEY) return false;
-
-        // Get the faucet EOA account
-        const account = privateKeyToAccount(
-          `0x${process.env.FRUITBOT_FAUCET_KEY}`
-        );
-        //console.log("account:", account);
-
-        // Initialize the viem client
-        const client = createWalletClient({
-          account,
-          chain: gnosis,
-          transport: http(process.env.GNOSIS_URL),
-        }).extend(publicActions);
         //console.log("client:", client);
 
         // Get the user's address
         const user = await kv.get(`user:${telegram_username}`);
         console.log("user address:", user.address);
 
-        const dripAmount = parseEther(FAUCET_AMOUNT);
+        const dripAmount = parseEther(CREDIT_FAUCET_AMOUNT);
 
-        // Send the funds
+        // Send the CREDIT funds
         const { request } = await client.simulateContract({
           account,
           address: "0x2A1367AC5F5391C02eca422aFECfCcEC1967371D",
@@ -181,11 +220,14 @@ export async function GET(request: Request, res: Response) {
           functionName: "transfer",
           args: [user.address, dripAmount],
         });
-        console.log("reached");
+        console.log("reached credit");
 
         //console.log("request:", request);
-        const hash = await client.writeContract(request); // Wallet Action
+        const credit_hash = await client.writeContract(request); // Wallet Action
         //console.log("hash:", hash);
+
+
+        //console.log("request:", request);
 
         // Update user's last_drip timestamp
         await kv.set(`verified_user:${telegram_username}`, Date.now());

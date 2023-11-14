@@ -101,13 +101,13 @@ bot.command("prices", async (ctx) => {
     .replace("/prices", "")
     .replace("@DCFruitBot", "")
     .trim();
-  const fruit = ["Apple", "Avocado", "Banana", "Lemon", "Strawberry", "Tomato"];
+  const fruit = ["  Apple   ", " Avocado  ", "  Banana  ", "  Lemon   ", "Strawberry", "  Tomato  "];
   let priceArray = [];
-  priceArray.push('\| Fruit      \| Price   \|');
-  priceArray.push('\|\:\-\-\-\-\-\-\-\-\-\-\:\|\:\-\-\-\-\-\-\-\:\|');
+  priceArray.push('\| Fruit      \| Price  \|');
+  priceArray.push('\|\:\-\-\-\-\-\-\-\-\-\-\:\|\:\-\-\-\-\-\-\:\|');
   for (let i = 0; i < fruit.length; i++) {
     console.log("element:", fruit[i]);
-    let price = fruit ? await getPrice(fruit[i]): null;
+    let price = fruit ? await getPrice(fruit[i].trim()): null;
     if(price) {
       price = price.replace('.', '\.');
       priceArray.push(`\| ${fruit[i]} \| ${price} \|`);

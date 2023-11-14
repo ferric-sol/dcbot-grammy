@@ -5,29 +5,19 @@ import { gnosis } from "viem/chains";
 import { normalize } from "viem/ens";
 import { privateKeyToAccount } from "viem/accounts";
 import { generatePrivateKey } from "viem/accounts";
-import { constructZupassPcdGetRequestUrl } from "@pcd/passport-interface";
-import {
-  EdDSATicketFieldsToReveal,
-  ZKEdDSAEventTicketPCDArgs,
-  ZKEdDSAEventTicketPCDPackage,
-} from "@pcd/zk-eddsa-event-ticket-pcd";
-import { EdDSATicketPCDPackage } from "@pcd/eddsa-ticket-pcd";
-import { Menu, MenuRange } from "@grammyjs/menu";
-import { ArgumentTypeName } from "@pcd/pcd-types";
-import { SemaphoreIdentityPCDPackage } from "@pcd/semaphore-identity-pcd";
 import getBalance from "./commands/balance";
 import getPrice from "./commands/price";
 // import zupass from "./commands/zupass";
 import buy from "./commands/buy";
 import sell from "./commands/sell";
+import { zupass_menu, handle_zuconnect } from "./commands/start"
 
 const token = process.env.TELEGRAM_API_KEY;
 if (!token) throw new Error("BOT_TOKEN is unset");
 
 const bot = new Bot(token);
-// export default webhookCallback(bot, "http");
 const timeoutMilliseconds = 60_000;
-export default webhookCallback(bot, "http", "throw", timeoutMilliseconds);
+export default webhookCallback(bot, "http", 'throw', timeoutMilliseconds);
 
 interface KeyPair {
   address: string;
@@ -64,122 +54,20 @@ const kv = createClient({
 
 // returns keypair for inputted username
 const getKeyPair = async (username: string): Promise<KeyPair | null> => {
-  return await kv.get(`user:${username}`);
+  console.log(`key: user:${username}`);
+  const keyPair = await kv.get(`user:${username}`);
+  console.log(`keyPair: ${JSON.stringify(keyPair)}`);
+  return keyPair as KeyPair;
 };
 
-// Initialize zupass menu
-const menu = new Menu("zupass");
-
-// Define EdDSA fields that will be exposed
-const fieldsToReveal: EdDSATicketFieldsToReveal = {
-  revealTicketId: false,
-  revealEventId: false,
-  revealProductId: false,
-  revealTimestampConsumed: false,
-  revealTimestampSigned: false,
-  revealAttendeeSemaphoreId: true,
-  revealIsConsumed: false,
-  revealIsRevoked: false,
-};
-
-// Define ZK edDSA PCD arguments
-const args: ZKEdDSAEventTicketPCDArgs = {
-  ticket: {
-    argumentType: ArgumentTypeName.PCD,
-    pcdType: EdDSATicketPCDPackage.name,
-    value: undefined,
-    userProvided: true,
-    displayName: "Your Ticket",
-    description: "",
-    validatorParams: {
-      eventIds: [],
-      productIds: [],
-      // TODO: surface which event ticket we are looking for
-      notFoundMessage: "You don't have a ticket to this event.",
-    },
-    hideIcon: true,
-  },
-  identity: {
-    argumentType: ArgumentTypeName.PCD,
-    pcdType: SemaphoreIdentityPCDPackage.name,
-    value: undefined,
-    userProvided: true,
-  },
-  fieldsToReveal: {
-    argumentType: ArgumentTypeName.ToggleList,
-    value: fieldsToReveal,
-    userProvided: false,
-    hideIcon: true,
-  },
-  externalNullifier: {
-    argumentType: ArgumentTypeName.BigInt,
-    value: undefined,
-    userProvided: false,
-  },
-  validEventIds: {
-    argumentType: ArgumentTypeName.StringArray,
-    value: ["b03bca82-2d63-11ee-9929-0e084c48e15f"],
-    userProvided: false,
-  },
-  watermark: {
-    argumentType: ArgumentTypeName.BigInt,
-    value: Date.now().toString(),
-    userProvided: false,
-    description: `This encodes the current timestamp so that the proof can grant funds via faucet when appropriate.`,
-  },
-};
-
-// Set menu variables
-menu.dynamic(async (ctx) => {
-  const range = new MenuRange();
-  // const appUrl = `${process.env.VERCEL_URL}`;
-  const appUrl = "https://zupass.org";
-  const returnHost =
-    process.env.NODE_ENV == "development"
-      ? `https://06c4-2603-8080-d9f0-79b0-298c-f4a7-f8f-6412.ngrok.io`
-      : `https://${process.env.VERCEL_URL}`;
-  const returnUrl = `${returnHost}/api/zucheck/?username=${ctx.from?.username}&telegram_chat_id=${ctx.chat?.id}`;
-  console.log("returnUrl: ", returnUrl);
-  let proofUrl = await constructZupassPcdGetRequestUrl(
-    appUrl,
-    returnUrl,
-    ZKEdDSAEventTicketPCDPackage.name,
-    args,
-    {
-      genericProveScreen: true,
-      title: "",
-      description:
-        "Fruitbot requests a zero-knowledge proof of your ticket to trade fruit",
-    }
-  );
-  console.log("zupass url: ", proofUrl);
-  range.webApp("Validate proof", proofUrl);
-  return range;
+const menu = zupass_menu();
+bot.use(menu);
+// Command to start the bot
+bot.command("start", async (ctx) => {
+  handle_zuconnect(ctx, bot, menu);
 });
-
 // Zupass command with ZK proof
 // Commented out code was moved to `./commands/zupass.ts`
-bot.use(menu);
-bot.command("zupass", async (ctx) => {
-  console.log("in zupass");
-  console.log("menu: ", menu);
-  // Send the menu.
-  if (ctx.from?.id) {
-    ctx.reply("Validate your proof and then use the menu to play:", {
-      reply_markup: menu,
-    });
-    // TODO: Figure out why this doesn't work
-    // await bot.api.sendMessage(
-    //   ctx.chat?.id,
-    //   "Validate your proof and then use the menu to play:",
-    //   { reply_markup: menu }
-    // );
-  }
-  //await zupass();
-});
-
-// Command to start the bot
-bot.command("start", (ctx) => ctx.reply("Welcome! Up and running."));
 
 // Returns the price of a fruit token
 bot.command("price", async (ctx) => {
@@ -216,12 +104,7 @@ bot.command("buy", async (ctx) => {
     ? await buy(inputSplit[1], inputSplit[0], username)
     : null;
   if (buyData) {
-    if (buyData.length == 2) {
-      await ctx.reply(buyData[0]);
-      await ctx.reply(buyData[1]);
-    } else {
-      ctx.reply(buyData);
-    }
+    ctx.reply(buyData);
   } else {
     ctx.reply(`Price not found for ${inputSplit[1]}`);
   }

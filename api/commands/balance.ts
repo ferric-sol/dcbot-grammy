@@ -27,5 +27,5 @@ export default async function getBalance(address: string) {
   });
   console.log("data:", data.toString());
   console.log("data2:", data);
-  return `Your SALT balance is: ${formatEther(data)}`;
+  return `Your credit balance is: ${formatEther(data)}`;
 }

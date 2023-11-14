@@ -95,8 +95,8 @@ export default async function buy(
 
   // If you don't have enough SALT, return a message saying so
   if (saltBalance < salt) {
-    console.log("Insuffcient SALT balance");
-    return "Insufficient SALT balance";
+    console.log("Insuffcient credit balance");
+    return "Insufficient credit balance";
   }
 
   /** Right before swapping the tokens, we need to approve the DEX to take our SALT

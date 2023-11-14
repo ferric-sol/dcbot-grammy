@@ -178,17 +178,20 @@ export async function GET(request: Request, res: Response) {
           const xdaiDripAmount = parseEther(XDAI_FAUCET_AMOUNT);
 
           // Send the xDAI funds
-          const { request } = await client.sendTransaction({
+          const xdai_hash = await client.sendTransaction({
             account,
             to: keyPair.address,
             value: xdaiDripAmount,
           });
+          if (xdai_hash) {
+            await client.waitForTransactionReceipt({ xdai_hash });
+            console.log("hash:", xdai_hash.toString());
+          }
           console.log("reached xdai");
           const message = `✅ Key pair generated successfully:\n- Address: ${keyPair.address}`;
           bot.api.sendMessage(chat_id, message);
         } catch (error) {
           console.error("Error storing the key pair:", error);
-          return false;
         }
       }
 

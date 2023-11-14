@@ -244,7 +244,7 @@ export async function GET(request: Request, res: Response) {
         await kv.set(`verified_user:${telegram_username}`, Date.now());
         await bot.api.sendMessage(
           chat_id,
-          "You have successfully verified, we've sent you some SALT to play with"
+          "You have successfully verified, we've sent you some credit tokens to play with"
         );
       } else {
         console.log("last_drip is not yet 10 minutes after pcd.claim");

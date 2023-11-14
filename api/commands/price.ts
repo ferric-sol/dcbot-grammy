@@ -18,7 +18,7 @@ if(!process.env.FRUITBOT_FAUCET_KEY) return false;
       `0x${process.env.FRUITBOT_FAUCET_KEY}`
     );
     const dexContractName: string = `BasicDex${tokenName}`;
-    console.log('dexContractName: ', dexContractName)
+    // console.log('dexContractName: ', dexContractName)
 
     // Initialize the viem client
     const client = createWalletClient({
@@ -30,7 +30,7 @@ if(!process.env.FRUITBOT_FAUCET_KEY) return false;
     // TODO: TSify this using types from
     // https://github.com/BuidlGuidl/event-wallet/blob/08790b0d8f070b22625b1fadcd312988a70be825/packages/nextjs/utils/scaffold-eth/contract.ts#L7
     const tokenContract = (contracts as any)[`${dexContractName}`];
-    console.log('tokenContract: ', tokenContract)
+    // console.log('tokenContract: ', tokenContract)
 
     if (!tokenContract) {
       throw new Error(`Token ${tokenName} not found in contracts`);
@@ -45,7 +45,8 @@ if(!process.env.FRUITBOT_FAUCET_KEY) return false;
 
     console.log("data:", data.toString());
     console.log("data2:", formatEther(data));
-    return `Price of 1 ${tokenName} is: ${formatEther(data)}`;
+    const price = formatEther(data);
+    return `${(+price).toFixed(4)}`;
 
 } catch (e) {
 console.log('Error: ', (e as Error).message);

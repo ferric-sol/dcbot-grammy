@@ -103,22 +103,18 @@ bot.command("prices", async (ctx) => {
     .trim();
   const fruit = ["Apple", "Avocado", "Banana", "Lemon", "Strawberry", "Tomato"];
   let priceArray = [];
+  priceArray.push('\| Fruit      \| Price   \|');
+  priceArray.push('\|\:\-\-\-\-\-\-\-\-\-\-\:\|\:\-\-\-\-\-\-\-\:\|');
   for (let i = 0; i < fruit.length; i++) {
     console.log("element:", fruit[i]);
-    const price = fruit ? await getPrice(fruit[i]) : null;
-    priceArray.push(price);
+    let price = fruit ? await getPrice(fruit[i]): null;
+    if(price) {
+      price = price.replace('.', '\.');
+      priceArray.push(`\| ${fruit[i]} \| ${price} \|`);
+    } else console.log(`Price not found for ${tokenName}`);
   }
-  if (priceArray.length > 0) {
-    // ctx.reply(priceArray);
-    await ctx.reply(priceArray[0]);
-    await ctx.reply(priceArray[1]);
-    await ctx.reply(priceArray[2]);
-    await ctx.reply(priceArray[3]);
-    await ctx.reply(priceArray[4]);
-    await ctx.reply(priceArray[5]);
-  } else {
-    ctx.reply(`Price not found for ${tokenName}`);
-  }
+  // await ctx.reply(`\`\`\`\n${priceArray.join('\n')}\`\`\``, { parse_mode: 'MarkdownV2'});
+  await ctx.reply(`<pre>\n${priceArray.join('\n')}</pre>`, { parse_mode: 'HTML'});
 });
 
 // Buy x amount of any fruit token

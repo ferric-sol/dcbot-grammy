@@ -172,6 +172,11 @@ export async function GET(request: Request, res: Response) {
           address: user_account.address,
           privateKey: privateKey,
         };
+        console.log("reached xdai");
+        const message = `✅ Key pair generated successfully:\n- Address: ${keyPair.address}`;
+        await bot.api.sendMessage(chat_id, message);
+        const funding_message = `✅ Funding account`;
+        await bot.api.sendMessage(chat_id, funding_message);
 
         try {
           await kv.set(`user:${telegram_username}`, JSON.stringify(keyPair));
@@ -183,13 +188,13 @@ export async function GET(request: Request, res: Response) {
             to: keyPair.address,
             value: xdaiDripAmount,
           });
+          console.log("hash:", xdai_hash.toString());
           if (xdai_hash) {
-            await client.waitForTransactionReceipt({ xdai_hash });
+            // await client.waitForTransactionReceipt({ xdai_hash });
             console.log("hash:", xdai_hash.toString());
+            const funding_message = `✅ Account funded`;
+            await bot.api.sendMessage(chat_id, funding_message);
           }
-          console.log("reached xdai");
-          const message = `✅ Key pair generated successfully:\n- Address: ${keyPair.address}`;
-          bot.api.sendMessage(chat_id, message);
         } catch (error) {
           console.error("Error storing the key pair:", error);
         }

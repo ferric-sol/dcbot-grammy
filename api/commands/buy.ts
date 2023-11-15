@@ -33,7 +33,6 @@ export default async function buy(
   username: string,
   ctx: Context
 ) {
-  await ctx.reply("✅ Approving Transaction...");
   // Connect to the user's wallet
   const keys = await kv.get(`user:${username}`);
   console.log("keys: ", keys);
@@ -135,10 +134,11 @@ export default async function buy(
   // we need to approve it to take the additional SALT
 
   if (salt > allowance) {
+    await ctx.reply("✅ Approving Transaction...");
     // Approve the FRUIT contract to `transferFrom()` your SALT
     console.log(
       `Approving ${tokenName} Dex for ${
-        (tokenContract.address, salt - parseInt(allowance))
+        (tokenContract.address, parseInt(salt) - parseInt(allowance))
       } SALT`
     );
     const approveTx = await client.writeContract({

@@ -167,7 +167,7 @@ bot.command("sell", async (ctx) => {
   const tokenName =
     inputSplit[1].charAt(0).toUpperCase() + inputSplit[1].slice(1);
   const sellData = input
-    ? await sell(tokenName, inputSplit[0], username)
+    ? await sell(tokenName, inputSplit[0], username, ctx)
     : null;
   if (sellData) {
     if (sellData.length == 2) {

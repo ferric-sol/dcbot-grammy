@@ -12,6 +12,7 @@ import { contracts } from "../contracts";
 import { createClient } from "@vercel/kv";
 import gnosisLink from "../gnosis";
 import formatEtherTg from "../../utils/format";
+import { Context } from "grammy";
 
 // Before the function can be executed, we need to connect to the user's wallet
 
@@ -25,7 +26,8 @@ const kv = createClient({
 export default async function sell(
   tokenName: string,
   amount: number,
-  username: string
+  username: string,
+  ctx: Context
 ) {
   // Connect to the user's wallet
   const keys = await kv.get(`user:${username}`);
@@ -118,6 +120,7 @@ export default async function sell(
   // we need to approve it to take the additional fruit
   console.log("parse ether:", parseEther(amount));
   if (parseEther(amount) > allowance) {
+    await ctx.reply("Approving Transaction...");
     console.log(
       `Approving ${tokenName} Dex for ${formatEtherTg(fruit - allowance)} fruit`
     );
@@ -127,12 +130,16 @@ export default async function sell(
       functionName: "approve",
       args: [tokenContract.address, fruit - allowance],
     });
-    const transaction = await client.waitForTransactionReceipt({ hash: approveTx });
+    const transaction = await client.waitForTransactionReceipt({
+      hash: approveTx,
+    });
+    await ctx.reply("✅ Transaction Approved!");
     console.log("approveTx:", approveTx);
   }
 
   // Simulate the transaction before actually sending it
   try {
+    await ctx.reply("Swapping assets...");
     const { request } = await client.simulateContract({
       account,
       address: tokenContract.address,
@@ -165,13 +172,16 @@ export default async function sell(
         data: transaction.logs[transaction.logs.length - 1].data,
         topics: transaction.logs[transaction.logs.length - 1].topics,
       });
-      const valueReceived = formatEtherTg(valueReceivedLog.args._tokensReceived);
+      const valueReceived = formatEtherTg(
+        valueReceivedLog.args._tokensReceived
+      );
       // setReceipt(receipt);
 
       // const transaction = await client.getTransactionReceipt({
       //   hash: hash,
       // });
       // console.log("tx data:", transaction);
+      await ctx.reply("✅ Assets Swapped!");
       return [
         `Successfully swapped ${amount} ${tokenName} for ${valueReceived} Salt`,
         `Transaction hash: ${hash}`,

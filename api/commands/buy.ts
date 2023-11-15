@@ -34,6 +34,9 @@ export default async function buy(
   // Connect to the user's wallet
   const keys = await kv.get(`user:${username}`);
 
+  if (!keys.privateKey) {
+    return "User not found";
+  }
   const account = privateKeyToAccount(keys.privateKey);
   const dexContractName: string = `BasicDex${tokenName}`;
   console.log("dexContractName:", dexContractName);

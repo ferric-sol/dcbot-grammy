@@ -127,6 +127,7 @@ export default async function sell(
       functionName: "approve",
       args: [tokenContract.address, fruit - allowance],
     });
+    const transaction = await client.waitForTransactionReceipt({ hash: approveTx });
     console.log("approveTx:", approveTx);
   }
 

@@ -134,7 +134,7 @@ export default async function buy(
   // we need to approve it to take the additional SALT
 
   if (salt > allowance) {
-    await ctx.reply("✅ Approving Transaction...");
+    await ctx.reply("Approving Transaction...");
     // Approve the FRUIT contract to `transferFrom()` your SALT
     console.log(
       `Approving ${tokenName} Dex for ${
@@ -156,7 +156,7 @@ export default async function buy(
   }
 
   try {
-    await ctx.reply("✅ Swapping assets...");
+    await ctx.reply("Swapping assets...");
     // Simulate the transaction before actually sending it
     const { request } = await client.simulateContract({
       account,

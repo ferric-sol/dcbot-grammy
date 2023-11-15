@@ -4,6 +4,7 @@
 1. catch typo/invalid commands
 1. rename fruit bot repo
 1. update bot and protect the env variable
+1. allow users to sell `all` of an asset
 
 Completed
 

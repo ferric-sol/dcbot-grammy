@@ -9,6 +9,12 @@
 1. faucet drop xDAI -- done
 1. fix buy and sell (price is off somewhere) <-- SOLVED
 1. smart menu, price and buy options displayed for user -- done
+1. catch unverified users trying to use commands
+1. catch typo commands
+1. bot messages for user during crucial steps such as approving and swapping
+1. fix buy amount being slightly off
+1. rename fruit bot repo
+1. update bot and protect the env variable
 
 Notes
 

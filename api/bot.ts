@@ -89,20 +89,29 @@ bot.command("prices", async (ctx) => {
     .replace("/prices", "")
     .replace("@DCFruitBot", "")
     .trim();
-  const fruit = ["  Apple   ", " Avocado  ", "  Banana  ", "  Lemon   ", "Strawberry", "  Tomato  "];
+  const fruit = [
+    "  Apple   ",
+    " Avocado  ",
+    "  Banana  ",
+    "  Lemon   ",
+    "Strawberry",
+    "  Tomato  ",
+  ];
   let priceArray = [];
-  priceArray.push('\|   Fruit    \| Price  \|');
-  priceArray.push('\|\:\-\-\-\-\-\-\-\-\-\-\:\|\:\-\-\-\-\-\-\:\|');
+  priceArray.push("|   Fruit    | Price  |");
+  priceArray.push("|:----------:|:------:|");
   for (let i = 0; i < fruit.length; i++) {
     console.log("element:", fruit[i]);
-    let price = fruit ? await getPrice(fruit[i].trim()): null;
-    if(price) {
-      price = price.replace('.', '\.');
+    let price = fruit ? await getPrice(fruit[i].trim()) : null;
+    if (price) {
+      price = price.replace(".", ".");
       priceArray.push(`\| ${fruit[i]} \| ${price} \|`);
     } else console.log(`Price not found for ${tokenName}`);
   }
   // await ctx.reply(`\`\`\`\n${priceArray.join('\n')}\`\`\``, { parse_mode: 'MarkdownV2'});
-  await ctx.reply(`<pre>\n${priceArray.join('\n')}</pre>`, { parse_mode: 'HTML'});
+  await ctx.reply(`<pre>\n${priceArray.join("\n")}</pre>`, {
+    parse_mode: "HTML",
+  });
 });
 
 // Buy x amount of any fruit token
@@ -122,7 +131,8 @@ bot.command("buy", async (ctx) => {
   const inputSplit = input.split(" ");
   console.log("input:", input);
   console.log("inputSplit:", inputSplit);
-  const tokenName = inputSplit[1].charAt(0).toUpperCase() + inputSplit[1].slice(1);
+  const tokenName =
+    inputSplit[1].charAt(0).toUpperCase() + inputSplit[1].slice(1);
   const buyData = input
     ? await buy(tokenName, inputSplit[0], username, bot)
     : null;
@@ -154,7 +164,8 @@ bot.command("sell", async (ctx) => {
   const inputSplit = input.split(" ");
   console.log("input:", input);
   console.log("inputSplit:", inputSplit);
-  const tokenName = inputSplit[1].charAt(0).toUpperCase() + inputSplit[1].slice(1);
+  const tokenName =
+    inputSplit[1].charAt(0).toUpperCase() + inputSplit[1].slice(1);
   const sellData = input
     ? await sell(tokenName, inputSplit[0], username)
     : null;
@@ -178,20 +189,30 @@ bot.command("balance", async (ctx) => {
   if (keyPair?.address) {
     console.log("addr:", keyPair?.address);
     const balances = await getBalance(keyPair?.address);
-    console.log('Balances: ', balances);
-    const fruits = ["  Apple   ", " Avocado  ", "  Banana  ", "  Lemon   ", "Strawberry", "  Tomato  ", "  Salt    "];
+    console.log("Balances: ", balances);
+    const fruits = [
+      "  Apple   ",
+      " Avocado  ",
+      "  Banana  ",
+      "  Lemon   ",
+      "Strawberry",
+      "  Tomato  ",
+      "  Salt    ",
+    ];
     const balanceArray = [];
-    balanceArray.push('\|   Fruit    \| Balance \|');
-    balanceArray.push('\|\:\-\-\-\-\-\-\-\-\-\-\:\|\:\-\-\-\-\-\-\-\:\|');
+    balanceArray.push("|   Fruit    | Balance |");
+    balanceArray.push("|:----------:|:-------:|");
     for (const fruit of fruits) {
       console.log("element:", fruit);
       let balance = balances[fruit.trim()];
-      if(balance) {
-        balance = balance.replace('.', '\.');
+      if (balance) {
+        balance = balance.replace(".", ".");
         balanceArray.push(`\| ${fruit} \| ${balance}  \|`);
       } else console.log(`Balance not found for ${fruit.trim()}`);
     }
-    await ctx.reply(`<pre>\n${balanceArray.join('\n')}</pre>`, { parse_mode: 'HTML'});
+    await ctx.reply(`<pre>\n${balanceArray.join("\n")}</pre>`, {
+      parse_mode: "HTML",
+    });
   }
 });
 

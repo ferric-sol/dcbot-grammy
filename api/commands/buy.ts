@@ -33,8 +33,8 @@ export default async function buy(
 ) {
   // Connect to the user's wallet
   const keys = await kv.get(`user:${username}`);
-  console.log('keys: ', keys);
-  console.log('username: ', username);
+  console.log("keys: ", keys);
+  console.log("username: ", username);
 
   if (!keys.privateKey) {
     return "User not found";
@@ -80,9 +80,14 @@ export default async function buy(
 
   // Use `price` to calculate min value out
   // 1e18 variable * 1e18 variable means you need to divide by 1e18 afterwards
-
-  const salt =
-    (parseInt(parseEther(amount.toString())) * parseInt(price)) / 1e18;
+  const salt = await client.readContract({
+    address: tokenContract.address,
+    abi: tokenContract.abi,
+    functionName: "assetOutPrice",
+    args: [parseEther(amount)],
+  });
+  // const salt =
+  //   (parseInt(parseEther(amount.toString())) * parseInt(price)) / 1e18;
   console.log("parsed price:", parseInt(price));
   console.log("parsed ether:", parseEther(amount.toString()));
   console.log("salt in:", salt);
@@ -137,9 +142,11 @@ export default async function buy(
       address: saltContract.address,
       abi: saltContract.abi,
       functionName: "approve",
-      args: [tokenContract.address, 1e23],
+      args: [tokenContract.address, 1e50],
     });
-    const transaction = await client.waitForTransactionReceipt({ hash: approveTx });
+    const transaction = await client.waitForTransactionReceipt({
+      hash: approveTx,
+    });
     console.log("approveTx:", approveTx);
   }
 

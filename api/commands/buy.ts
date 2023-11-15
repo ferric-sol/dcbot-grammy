@@ -114,6 +114,8 @@ export default async function buy(
     functionName: "allowance",
     args: [keys.address, tokenContract.address],
   });
+
+  await sleep(5000);
   console.log("allowance:", allowance);
 
   // If you are trying to give the fruit contract more SALT than you currently have approved it to take
@@ -171,7 +173,9 @@ export default async function buy(
         data: transaction.logs[transaction.logs.length - 1].data,
         topics: transaction.logs[transaction.logs.length - 1].topics,
       });
-      const valueReceived = formatEtherTg(valueReceivedLog.args._tokensReceived);
+      const valueReceived = formatEtherTg(
+        valueReceivedLog.args._tokensReceived
+      );
 
       return [
         `Successfully swapped ${formatEtherTg(

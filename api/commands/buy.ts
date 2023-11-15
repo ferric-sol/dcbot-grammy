@@ -15,6 +15,8 @@ import formatEtherTg from "../../utils/format";
 
 // Before the function can be executed, we need to connect to the user's wallet
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 // Initialize kv database
 const kv = createClient({
   url: process.env.KV_REST_API_URL,
@@ -130,6 +132,7 @@ export default async function buy(
       functionName: "approve",
       args: [tokenContract.address, salt - parseInt(allowance)],
     });
+    await sleep(5000);
     console.log("approveTx:", approveTx);
   }
 

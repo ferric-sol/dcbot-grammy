@@ -91,7 +91,7 @@ bot.command("prices", async (ctx) => {
     .trim();
   const fruit = ["  Apple   ", " Avocado  ", "  Banana  ", "  Lemon   ", "Strawberry", "  Tomato  "];
   let priceArray = [];
-  priceArray.push('\| Fruit      \| Price  \|');
+  priceArray.push('\|   Fruit    \| Price  \|');
   priceArray.push('\|\:\-\-\-\-\-\-\-\-\-\-\:\|\:\-\-\-\-\-\-\:\|');
   for (let i = 0; i < fruit.length; i++) {
     console.log("element:", fruit[i]);
@@ -172,27 +172,24 @@ bot.command("sell", async (ctx) => {
 
 // Returns the user's balance in SALT
 bot.command("balance", async (ctx) => {
-  const ethAddressOrEns = ctx.message?.text
-    .replace("/balance", "")
-    .replace("@DCFruitBot", "")
-    .trim();
   const keyPair = ctx.from?.username
     ? await getKeyPair(ctx.from?.username?.toString())
     : null;
   if (keyPair?.address) {
     console.log("addr:", keyPair?.address);
     const balances = await getBalance(keyPair?.address);
-    const fruit = ["  Apple   ", " Avocado  ", "  Banana  ", "  Lemon   ", "Strawberry", "  Tomato  "];
+    console.log('Balances: ', balances);
+    const fruits = ["  Apple   ", " Avocado  ", "  Banana  ", "  Lemon   ", "Strawberry", "  Tomato  ", "  Salt    "];
     const balanceArray = [];
-    balanceArray.push('\| Fruit      \| Balance  \|');
-    balanceArray.push('\|\:\-\-\-\-\-\-\-\-\-\-\:\|\:\-\-\-\-\-\-\:\|');
-    for (let i = 0; i < fruit.length; i++) {
-      console.log("element:", fruit[i]);
-      let balance = fruit ? await balances[fruit[i].trim()] : null;
+    balanceArray.push('\|   Fruit    \| Balance \|');
+    balanceArray.push('\|\:\-\-\-\-\-\-\-\-\-\-\:\|\:\-\-\-\-\-\-\-\:\|');
+    for (const fruit of fruits) {
+      console.log("element:", fruit);
+      let balance = balances[fruit.trim()];
       if(balance) {
         balance = balance.replace('.', '\.');
-        balanceArray.push(`\| ${fruit[i]} \| ${balance} \|`);
-      } else console.log(`Balance not found for ${fruit[i].trim()}`);
+        balanceArray.push(`\| ${fruit} \| ${balance}  \|`);
+      } else console.log(`Balance not found for ${fruit.trim()}`);
     }
     await ctx.reply(`<pre>\n${balanceArray.join('\n')}</pre>`, { parse_mode: 'HTML'});
   }

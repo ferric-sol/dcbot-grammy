@@ -10,7 +10,7 @@ export default async function getBalance(address: string) {
 
   const tokenAddresses = { 
     Salt: "0x2A1367AC5F5391C02eca422aFECfCcEC1967371D",
-    Apple: "0x23a1Fdf7f34203020ad741a3Bb9b3521E2D16f06", 
+    Apple: "0x48D1c60e807E340359ea1253Be4F2e60f9c65A36",
     Avocado: "0x243B401EE5EE4ABA8bF3b36352a48e664DA3Bca8",
     Banana: "0xFA814FC24256206fC25E927f8Af05cCD57C577d4",
     Lemon: "0x0D5854b5C10543c05c0bb4341d2bDFBa87F28E8f",
@@ -30,16 +30,19 @@ export default async function getBalance(address: string) {
   }).extend(publicActions);
 
   const balances = [];
-  for(tokenName of Object.keys(tokenAddresses)) {
+  for(const tokenName of Object.keys(tokenAddresses)) {
     // Call `balanceOf` on SALT contract
+    let tokenAddress = tokenAddresses[tokenName];
+    console.log(address);
+    console.log(tokenAddress);
     const data = await client.readContract({
-      address: tokenAddresses[tokenName],
+      address: tokenAddress, 
       abi,
       functionName: "balanceOf",
       args: [address],
     });
     console.log('data: ', formatEtherTg(data));
-    if(data !== 0) balances.push({ tokenName: formatEtherTg(data) });
+    if(formatEtherTg(data) !== '0.0000') balances[tokenName] = formatEtherTg(data);
   }    
 
   return balances;

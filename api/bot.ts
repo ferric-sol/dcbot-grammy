@@ -189,20 +189,13 @@ bot.command("balance", async (ctx) => {
   if (keyPair?.address) {
     console.log("addr:", keyPair?.address);
     const balances = await getBalance(keyPair?.address);
-    console.log("Balances: ", balances);
-    const fruits = [
-      "  Apple   ",
-      " Avocado  ",
-      "  Banana  ",
-      "  Lemon   ",
-      "Strawberry",
-      "  Tomato  ",
-      "  Salt    ",
-    ];
+    console.log('Balances: ', balances);
+    const fruits = ["  Apple   ", " Avocado  ", "  Banana  ", "  Lemon   ", "Strawberry", "  Tomato  ", "  Credit   "];
     const balanceArray = [];
-    balanceArray.push("|   Fruit    | Balance |");
-    balanceArray.push("|:----------:|:-------:|");
-    for (const fruit of fruits) {
+    balanceArray.push('\|   Fruit    \| Balance \|');
+    balanceArray.push('\|\:\-\-\-\-\-\-\-\-\-\-\:\|\:\-\-\-\-\-\-\-\:\|');
+    for (let fruit of fruits) {
+      if(fruit.trim() === "Credit") fruit = "Salt";
       console.log("element:", fruit);
       let balance = balances[fruit.trim()];
       if (balance) {

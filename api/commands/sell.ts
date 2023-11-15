@@ -11,6 +11,7 @@ import { gnosis } from "viem/chains";
 import { contracts } from "../contracts";
 import { createClient } from "@vercel/kv";
 import gnosisLink from "../gnosis";
+import formatEtherTg from "../../utils/format";
 
 // Before the function can be executed, we need to connect to the user's wallet
 
@@ -118,7 +119,7 @@ export default async function sell(
   console.log("parse ether:", parseEther(amount));
   if (parseEther(amount) > allowance) {
     console.log(
-      `Approving ${tokenName} Dex for ${formatEther(fruit - allowance)} fruit`
+      `Approving ${tokenName} Dex for ${formatEtherTg(fruit - allowance)} fruit`
     );
     const approveTx = await client.writeContract({
       address: fruitContract.address,
@@ -163,7 +164,7 @@ export default async function sell(
         data: transaction.logs[transaction.logs.length - 1].data,
         topics: transaction.logs[transaction.logs.length - 1].topics,
       });
-      const valueReceived = formatEther(valueReceivedLog.args._tokensReceived);
+      const valueReceived = formatEtherTg(valueReceivedLog.args._tokensReceived);
       // setReceipt(receipt);
 
       // const transaction = await client.getTransactionReceipt({

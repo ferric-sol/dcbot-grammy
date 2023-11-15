@@ -84,18 +84,6 @@ bot.command("price", async (ctx) => {
 });
 
 // Returns the prices of all fruit tokens
-// bot.command("prices", async (ctx) => {
-//   const tokenName = ctx.message?.text
-//     .replace("/prices", "")
-//     .replace("@DCFruitBot", "")
-//     .trim();
-//   const price = tokenName ? await getPrices(tokenName) : null;
-//   if (price) {
-//     ctx.reply(price);
-//   } else {
-//     ctx.reply(`Price not found for ${tokenName}`);
-//   }
-// });
 bot.command("prices", async (ctx) => {
   const tokenName = ctx.message?.text
     .replace("/prices", "")
@@ -193,9 +181,20 @@ bot.command("balance", async (ctx) => {
     : null;
   if (keyPair?.address) {
     console.log("addr:", keyPair?.address);
-    const message = await getBalance(keyPair?.address);
-
-    ctx.reply(message);
+    const balances = await getBalance(keyPair?.address);
+    const fruit = ["  Apple   ", " Avocado  ", "  Banana  ", "  Lemon   ", "Strawberry", "  Tomato  "];
+    const balanceArray = [];
+    balanceArray.push('\| Fruit      \| Balance  \|');
+    balanceArray.push('\|\:\-\-\-\-\-\-\-\-\-\-\:\|\:\-\-\-\-\-\-\:\|');
+    for (let i = 0; i < fruit.length; i++) {
+      console.log("element:", fruit[i]);
+      let balance = fruit ? await balances[fruit[i].trim()] : null;
+      if(balance) {
+        balance = balance.replace('.', '\.');
+        balanceArray.push(`\| ${fruit[i]} \| ${balance} \|`);
+      } else console.log(`Balance not found for ${fruit[i].trim()}`);
+    }
+    await ctx.reply(`<pre>\n${balanceArray.join('\n')}</pre>`, { parse_mode: 'HTML'});
   }
 });
 

@@ -2,6 +2,7 @@ import { abi } from "../../abi/xDAI";
 import { privateKeyToAccount } from "viem/accounts";
 import { createWalletClient, http, publicActions, formatEther } from "viem";
 import { gnosis } from "viem/chains";
+import formatEtherTg from "../../utils/format";
 
 export default async function getBalance(address: string) {
   // Get the faucet EOA account
@@ -27,5 +28,5 @@ export default async function getBalance(address: string) {
   });
   console.log("data:", data.toString());
   console.log("data2:", data);
-  return `Your credit balance is: ${formatEther(data)}`;
+  return `Your credit balance is: ${formatEtherTg(data)}`;
 }

@@ -8,6 +8,7 @@ formatEther,
 } from "viem";
 import { gnosis } from "viem/chains";
 import { contracts } from "../contracts";
+import formatEtherTg from "../../utils/format";
 
 export default async function getPrice(tokenName: string) {
 try {
@@ -44,8 +45,8 @@ if(!process.env.FRUITBOT_FAUCET_KEY) return false;
     });
 
     console.log("data:", data.toString());
-    console.log("data2:", formatEther(data));
-    const price = formatEther(data);
+    console.log("data2:", formatEtherTg(data));
+    const price = formatEtherTg(data);
     return `${(+price).toFixed(4)}`;
 
 } catch (e) {

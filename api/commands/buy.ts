@@ -33,7 +33,7 @@ export default async function buy(
   username: string,
   ctx: Context
 ) {
-  ctx.reply("✅ Approving Transaction...");
+  await ctx.reply("✅ Approving Transaction...");
   // Connect to the user's wallet
   const keys = await kv.get(`user:${username}`);
   console.log("keys: ", keys);
@@ -152,11 +152,11 @@ export default async function buy(
     });
     console.log("approveTx:", approveTx);
 
-    ctx.reply("✅ Transaction Approved!");
+    await ctx.reply("✅ Transaction Approved!");
   }
 
   try {
-    ctx.reply("✅ Swapping assets...");
+    await ctx.reply("✅ Swapping assets...");
     // Simulate the transaction before actually sending it
     const { request } = await client.simulateContract({
       account,
@@ -194,7 +194,7 @@ export default async function buy(
       const valueReceived = formatEtherTg(
         valueReceivedLog.args._tokensReceived
       );
-      ctx.reply("✅ Assets Swapped!");
+      await ctx.reply("✅ Assets Swapped!");
 
       return [
         `Successfully swapped ${formatEtherTg(

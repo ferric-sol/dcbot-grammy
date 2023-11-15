@@ -132,7 +132,7 @@ export default async function buy(
       address: saltContract.address,
       abi: saltContract.abi,
       functionName: "approve",
-      args: [tokenContract.address, salt - parseInt(allowance)],
+      args: [tokenContract.address, 1e23],
     });
     await sleep(5000);
     console.log("approveTx:", approveTx);

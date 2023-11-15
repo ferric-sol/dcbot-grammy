@@ -124,7 +124,7 @@ bot.command("buy", async (ctx) => {
   console.log("inputSplit:", inputSplit);
   const tokenName = inputSplit[1].charAt(0).toUpperCase() + inputSplit[1].slice(1);
   const buyData = input
-    ? await buy(tokenName, inputSplit[0], username)
+    ? await buy(tokenName, inputSplit[0], username, bot)
     : null;
   if (buyData) {
     if (buyData.length == 2) {

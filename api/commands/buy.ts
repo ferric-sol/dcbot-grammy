@@ -33,10 +33,13 @@ export default async function buy(
 ) {
   // Connect to the user's wallet
   const keys = await kv.get(`user:${username}`);
+  console.log('keys: ', keys);
+  console.log('username: ', username);
 
   if (!keys.privateKey) {
     return "User not found";
   }
+
   const account = privateKeyToAccount(keys.privateKey);
   const dexContractName: string = `BasicDex${tokenName}`;
   console.log("dexContractName:", dexContractName);
@@ -118,7 +121,6 @@ export default async function buy(
     args: [keys.address, tokenContract.address],
   });
 
-  await sleep(5000);
   console.log("allowance:", allowance);
 
   // If you are trying to give the fruit contract more SALT than you currently have approved it to take
@@ -137,7 +139,7 @@ export default async function buy(
       functionName: "approve",
       args: [tokenContract.address, 1e23],
     });
-    await sleep(5000);
+    const transaction = await client.waitForTransactionReceipt({ hash: approveTx });
     console.log("approveTx:", approveTx);
   }
 

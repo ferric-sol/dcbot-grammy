@@ -8,7 +8,7 @@
     "outDir": "./build",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "strict": true,
+    "strict": false,
     "skipLibCheck": true,
   }
 }

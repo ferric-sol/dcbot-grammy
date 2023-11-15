@@ -134,7 +134,7 @@ bot.command("buy", async (ctx) => {
   const tokenName =
     inputSplit[1].charAt(0).toUpperCase() + inputSplit[1].slice(1);
   const buyData = input
-    ? await buy(tokenName, inputSplit[0], username, bot)
+    ? await buy(tokenName, inputSplit[0], username, ctx)
     : null;
   if (buyData) {
     if (buyData.length == 2) {
@@ -189,13 +189,21 @@ bot.command("balance", async (ctx) => {
   if (keyPair?.address) {
     console.log("addr:", keyPair?.address);
     const balances = await getBalance(keyPair?.address);
-    console.log('Balances: ', balances);
-    const fruits = ["  Apple   ", " Avocado  ", "  Banana  ", "  Lemon   ", "Strawberry", "  Tomato  ", "  Credit   "];
+    console.log("Balances: ", balances);
+    const fruits = [
+      "  Apple   ",
+      " Avocado  ",
+      "  Banana  ",
+      "  Lemon   ",
+      "Strawberry",
+      "  Tomato  ",
+      "  Credit   ",
+    ];
     const balanceArray = [];
-    balanceArray.push('\|   Fruit    \| Balance \|');
-    balanceArray.push('\|\:\-\-\-\-\-\-\-\-\-\-\:\|\:\-\-\-\-\-\-\-\:\|');
+    balanceArray.push("|   Fruit    | Balance |");
+    balanceArray.push("|:----------:|:-------:|");
     for (let fruit of fruits) {
-      if(fruit.trim() === "Credit") fruit = "Salt";
+      if (fruit.trim() === "Credit") fruit = "Salt";
       console.log("element:", fruit);
       let balance = balances[fruit.trim()];
       if (balance) {

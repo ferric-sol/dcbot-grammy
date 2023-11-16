@@ -306,3 +306,18 @@ bot.command("generate", async (ctx) => {
     console.error("Error sending message:", error);
   }
 });
+
+bot.command("help", async (ctx) => {
+  const helpText = 
+  `
+    | Command | Description                                               |
+    |---------| ----------------------------------------------------------|
+    | /start  | Generate a wallet and fund it to begin playing the game   |
+    | /balance| Display your wallet balance                               |
+    | /prices | Display fruit prices                                      |
+    | /buy    | Buy <quantity> <fruit> eg. /buy 1 apple  (qty can be max) |
+    | /sell   | Sell <quantity> <fruit> eg. /sell 1 apple (qty can be max)|
+  `
+
+  ctx.reply(helpText, { parse_mode: 'HTML'});
+});

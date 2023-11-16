@@ -5,6 +5,7 @@ Production deployment checklist here: https://github.com/ferric-sol/dcbot-grammy
 1. rename fruit bot repo
 1. update bot and protect the env variable
 1. Make CREDIT_FAUCET_AMOUNT and XDAI_FAUCET_AMOUNT env vars
+1. Faucet empty notification!
 
 ## Completed
 

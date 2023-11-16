@@ -1,8 +1,13 @@
-1. /leaderboard
+Production deployment checklist here: https://github.com/ferric-sol/dcbot-grammy/issues/1
+
+1. allow users to sell `all` of an asset
+1. Make help text more helpful, add /help which is automatically sent on /start
 1. catch typo/invalid commands
 1. rename fruit bot repo
 1. update bot and protect the env variable
-1. allow users to sell `all` of an asset
+
+Later
+1. /leaderboard
 
 Completed
 

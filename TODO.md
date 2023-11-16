@@ -1,13 +1,14 @@
 Production deployment checklist here: https://github.com/ferric-sol/dcbot-grammy/issues/1
 
-1. allow users to sell `all` of an asset
 1. Make help text more helpful, add /help which is automatically sent on /start
 1. catch typo/invalid commands
 1. rename fruit bot repo
 1. update bot and protect the env variable
+1. Make CREDIT_FAUCET_AMOUNT and XDAI_FAUCET_AMOUNT env vars
 
 ## Completed
 
+1. allow users to sell `all` of an asset -- done
 1. catch unverified users trying to use commands -- done
 1. Add telegram messages to tell the user what it's doing on buy/sell -- done
 1. fix buy amount being slightly off -- done

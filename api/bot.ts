@@ -71,9 +71,17 @@ bot.use(menu);
 // Command to start the bot
 bot.command("start", async (ctx) => {
   console.log(await bot.api.getChatMemberCount(ctx.chat.id));
+  const memberCount = await bot.api.getChatMemberCount(ctx.chat.id);
+  if (memberCount > 2) {
+    ctx.reply(
+      "Using `/start` in a groupchat is unsupported, please DM me to run this command!"
+    );
+  } else {
+    handle_zuconnect(ctx, bot, menu);
+  }
   // console.log(await ctx.api.use.getChatMemberCount(ctx.chat.id));
 
-  //handle_zuconnect(ctx, bot, menu);
+  //
 });
 // Zupass command with ZK proof
 // Commented out code was moved to `./commands/zupass.ts`

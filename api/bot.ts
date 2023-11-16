@@ -70,10 +70,11 @@ const menu = zupass_menu();
 bot.use(menu);
 // Command to start the bot
 bot.command("start", async (ctx) => {
-  console.log(ctx);
-  console.log("chat:", ctx.chat);
-  console.log(ctx.api.getChatMemberCount(ctx.chat.id));
-  console.log(await ctx.api.getChatMemberCount(ctx.chat.id));
+  console.log(ctx.api);
+  console.log(await ctx.api.use.getChatMemberCount(ctx.chat.id));
+  console.log(
+    await ctx.api.installedTransformers.getChatMemberCount(ctx.chat.id)
+  );
 
   //handle_zuconnect(ctx, bot, menu);
 });

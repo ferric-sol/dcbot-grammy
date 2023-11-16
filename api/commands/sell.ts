@@ -64,6 +64,7 @@ export default async function sell(
 
   // Format input amount
   let fruit;
+  console.log(amount == "all");
   if (amount == "all") {
     fruit = await client.readContract({
       address: fruitContract.address,
@@ -86,10 +87,9 @@ export default async function sell(
   console.log("price:", price);
 
   // Use `price` to calculate min value out
-  const salt =
-    (parseInt(parseEther(amount.toString())) * parseInt(price)) / 1e18;
+  const salt = (parseInt(fruit) * parseInt(price)) / 1e18;
   console.log("parsed price:", parseInt(price));
-  console.log("parsed ether:", parseEther(amount.toString()));
+  console.log("parsed ether:", fruit);
   console.log("salt:", salt);
 
   // Calculate minimum salt token amount to receive (temporarily hard-coded to 95% of original value which is 5% slippage)
@@ -129,8 +129,8 @@ export default async function sell(
 
   // If you are trying to give the fruit contract more fruit than you currently have approved it to take
   // we need to approve it to take the additional fruit
-  console.log("parse ether:", parseEther(amount));
-  if (parseEther(amount) > allowance) {
+  console.log("fruit:", fruit);
+  if (fruit > allowance) {
     await ctx.reply("Approving Transaction...");
     console.log(
       `Approving ${tokenName} Dex for ${formatEtherTg(fruit - allowance)} fruit`
@@ -194,7 +194,9 @@ export default async function sell(
       // console.log("tx data:", transaction);
       await ctx.reply("✅ Assets Swapped!");
       return [
-        `Successfully swapped ${amount} ${tokenName} for ${valueReceived} Salt`,
+        `Successfully swapped ${formatEtherTg(
+          fruit
+        )} ${tokenName} for ${valueReceived} Salt`,
         `Transaction hash: ${hash}`,
       ];
     }

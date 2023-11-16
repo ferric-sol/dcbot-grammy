@@ -233,7 +233,6 @@ bot.command("balance", async (ctx) => {
     balanceArray.push("|   Fruit    | Balance |");
     balanceArray.push("|:----------:|:-------:|");
     for (let fruit of fruits) {
-      if (fruit.trim() === "Credit") fruit = "Salt";
       console.log("element:", fruit);
       let balance = balances[fruit.trim()];
       if (balance) {

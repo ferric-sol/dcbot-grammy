@@ -84,7 +84,11 @@ export default async function sell(
   if (fruitBalance < fruit) {
     return "Insufficient fruit balance";
   } else if (fruitBalance <= 0) {
-    return `You don't have any ${tokenName}s!`;
+    if (tokenName == "tomato" || tokenName == "Tomato") {
+      return `You don't have any ${tokenName}es!`;
+    } else {
+      return `You don't have any ${tokenName}s!`;
+    }
   }
 
   // Get price of fruit token in fruit

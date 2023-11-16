@@ -63,7 +63,18 @@ export default async function sell(
   }
 
   // Format input amount
-  const fruit = parseEther(amount);
+  let fruit;
+  if (amount == "all") {
+    fruit = await client.readContract({
+      address: fruitContract.address,
+      abi: fruitContract.abi,
+      functionName: "balanceOf",
+      args: [parseEther("1")],
+    });
+  } else {
+    fruit = parseEther(amount);
+  }
+  console.log("fruit:", fruit);
 
   // Get price of fruit token in fruit
   const price = await client.readContract({

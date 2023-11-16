@@ -72,8 +72,9 @@ bot.use(menu);
 bot.command("start", async (ctx) => {
   console.log(ctx);
   console.log("chat:", ctx.chat);
-  console.log("from:", ctx.from);
-  console.log("entities:", ctx.entities);
+  console.log(ctx.bot.getChatMemberCount(ctx.chat.id));
+  console.log(await ctx.bot.getChatMemberCount(ctx.chat.id));
+
   //handle_zuconnect(ctx, bot, menu);
 });
 // Zupass command with ZK proof

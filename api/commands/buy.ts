@@ -153,6 +153,7 @@ export default async function buy(
   if (salt > allowance) {
     //await ctx.reply("Approving Transaction...");
     console.log("chatId:", ctx.chat.id);
+    console.log("ctx:", ctx);
     await bot.api.sendMessage(ctx.chat.id, "Approving Transaction...");
     // Approve the FRUIT contract to `transferFrom()` your SALT
     console.log(
@@ -182,7 +183,7 @@ export default async function buy(
       address: tokenContract.address,
       abi: tokenContract.abi,
       functionName: "creditToAsset",
-      args: [salt, minOutParsed],
+      args: [salt, minOut],
     });
 
     // Send the transaction

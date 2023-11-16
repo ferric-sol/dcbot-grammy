@@ -83,7 +83,7 @@ export default async function buy(
   // Format input amount
   let salt;
   let minOut;
-  console.log("amount:", amount.toString().toLowerCase);
+  console.log("amount bool:", amount.toString().toLowerCase == "max");
   if (
     amount.toString().toLowerCase() == "all" ||
     amount.toString().toLowerCase() == "max"

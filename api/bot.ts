@@ -230,14 +230,14 @@ bot.command("balance", async (ctx) => {
       "  Credit  ",
     ];
     const balanceArray = [];
-    balanceArray.push("|   Fruit    | Balance |");
-    balanceArray.push("|:----------:|:-------:|");
+    balanceArray.push("|   Fruit    | Balance  |");
+    balanceArray.push("|:----------:|:--------:|");
     for (let fruit of fruits) {
       console.log("element:", fruit);
       let balance = balances[fruit.trim()];
       if (balance) {
         balance = balance.replace(".", ".");
-        balanceArray.push(`\| ${fruit} \| ${balance} \|`);
+        balanceArray.push(`\| ${fruit} \| ${balance}  \|`);
       } else console.log(`Balance not found for ${fruit.trim()}`);
     }
     await ctx.reply(`<pre>\n${balanceArray.join("\n")}</pre>`, {

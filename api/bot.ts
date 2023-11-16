@@ -61,7 +61,7 @@ const getKeyPair = async (username: string): Promise<KeyPair | null> => {
   return keyPair as KeyPair;
 };
 
-const isVerifiedUser = async (username: string): boolean => {
+const isVerifiedUser = async (username: string): Promise<boolean> => {
   const verified_user =  await kv.get(`verified_user:${username}`);
   return verified_user ? true : false;
 }
@@ -130,7 +130,7 @@ bot.command("buy", async (ctx) => {
     return;
   }
 
-  if(!isVerifiedUser(username)) {
+  if(!await isVerifiedUser(username)) {
     ctx.reply('You need to verify with zupass first! Use /start in a DM to get started');
     return;
   }
@@ -170,7 +170,7 @@ bot.command("sell", async (ctx) => {
     return;
   }
 
-  if(!isVerifiedUser(username)) {
+  if(!await isVerifiedUser(username)) {
     ctx.reply('You need to verify with zupass first! Use /start in a DM to get started');
     return;
   }
@@ -209,7 +209,7 @@ bot.command("balance", async (ctx) => {
     return;
   }
 
-  if(!isVerifiedUser(username)) {
+  if(!await isVerifiedUser(username)) {
     ctx.reply('You need to verify with zupass first! Use /start in a DM to get started');
     return;
   }
@@ -227,13 +227,12 @@ bot.command("balance", async (ctx) => {
       "  Lemon   ",
       "Strawberry",
       "  Tomato  ",
-      "  Credit   ",
+      "  Credit  ",
     ];
     const balanceArray = [];
-    balanceArray.push("|   Fruit    | Balance |");
-    balanceArray.push("|:----------:|:-------:|");
+    balanceArray.push("|   Fruit    | Balance  |");
+    balanceArray.push("|:----------:|:--------:|");
     for (let fruit of fruits) {
-      if (fruit.trim() === "Credit") fruit = "Salt";
       console.log("element:", fruit);
       let balance = balances[fruit.trim()];
       if (balance) {
@@ -260,7 +259,7 @@ bot.command("generate", async (ctx) => {
     return;
   }
 
-  if(!isVerifiedUser(username)) {
+  if(!await isVerifiedUser(username)) {
     ctx.reply('You need to verify with zupass first! Use /start in a DM to get started');
     return;
   }

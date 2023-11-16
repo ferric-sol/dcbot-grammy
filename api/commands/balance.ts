@@ -30,7 +30,7 @@ export default async function getBalance(address: string) {
   }).extend(publicActions);
 
   const balances = [];
-  for(const tokenName of Object.keys(tokenAddresses)) {
+  for(let tokenName of Object.keys(tokenAddresses)) {
     // Call `balanceOf` on SALT contract
     let tokenAddress = tokenAddresses[tokenName];
     console.log(address);
@@ -41,6 +41,7 @@ export default async function getBalance(address: string) {
       functionName: "balanceOf",
       args: [address],
     });
+    if (tokenName === "Salt") tokenName = "Credit";
     console.log('data: ', formatEtherTg(data));
     if(formatEtherTg(data) !== '0.0000') balances[tokenName] = formatEtherTg(data);
   }    

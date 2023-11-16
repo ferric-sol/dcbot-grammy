@@ -22,3 +22,4 @@ Completed
 
 1. We need more xDAI for the faucet ask Austin perhaps
 1. reset bot url (set back to vercel)
+

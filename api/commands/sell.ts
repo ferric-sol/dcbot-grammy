@@ -81,9 +81,10 @@ export default async function sell(
   console.log("fruit:", fruit);
 
   // If you don't have enough fruit, return a message saying so
-  if (fruitBalance < fruit || fruitBalance <= 0) {
-    console.log("Insuffcient fruit balance");
+  if (fruitBalance < fruit) {
     return "Insufficient fruit balance";
+  } else if (fruitBalance <= 0) {
+    return `You don't have any ${tokenName}!`;
   }
 
   // Get price of fruit token in fruit

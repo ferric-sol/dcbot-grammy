@@ -92,7 +92,7 @@ export default async function buy(
         await client.readContract({
           address: tokenContract.address,
           abi: tokenContract.abi,
-          functionName: "creditOutPrice",
+          functionName: "creditInPrice",
           args: [saltBalance],
         })
       ) * 0.95;

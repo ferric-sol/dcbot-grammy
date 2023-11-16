@@ -73,7 +73,10 @@ export default async function sell(
 
   // Format input amount
   let fruit;
-  if (amount == "all") {
+  if (
+    amount.toString().toLowerCase() == "all" ||
+    amount.toString().toLowerCase() == "max"
+  ) {
     fruit = fruitBalance;
   } else {
     fruit = parseEther(amount);

@@ -62,9 +62,9 @@ const getKeyPair = async (username: string): Promise<KeyPair | null> => {
 };
 
 const isVerifiedUser = async (username: string): Promise<boolean> => {
-  const verified_user =  await kv.get(`verified_user:${username}`);
+  const verified_user = await kv.get(`verified_user:${username}`);
   return verified_user ? true : false;
-}
+};
 
 const menu = zupass_menu();
 bot.use(menu);
@@ -125,13 +125,15 @@ bot.command("buy", async (ctx) => {
   // Parse and pass username
   const username = ctx.from?.username?.toString();
   if (!username) {
-    console.log('Missing username: ', ctx);
+    console.log("Missing username: ", ctx);
     ctx.reply("No username");
     return;
   }
 
-  if(!await isVerifiedUser(username)) {
-    ctx.reply('You need to verify with zupass first! Use /start in a DM to get started');
+  if (!(await isVerifiedUser(username))) {
+    ctx.reply(
+      "You need to verify with zupass first! Use /start in a DM to get started"
+    );
     return;
   }
 
@@ -140,6 +142,10 @@ bot.command("buy", async (ctx) => {
     .replace("/buy", "")
     .replace("@DCFruitBot", "")
     .trim();
+  if (input.length <= 0) {
+    ctx.reply("No input provided!");
+    return;
+  }
   const inputSplit = input.split(" ");
   console.log("input:", input);
   console.log("inputSplit:", inputSplit);
@@ -165,13 +171,15 @@ bot.command("sell", async (ctx) => {
   // Parse and pass username
   const username = ctx.from?.username?.toString();
   if (!username) {
-    console.log('Missing username: ', ctx);
+    console.log("Missing username: ", ctx);
     ctx.reply("No username");
     return;
   }
 
-  if(!await isVerifiedUser(username)) {
-    ctx.reply('You need to verify with zupass first! Use /start in a DM to get started');
+  if (!(await isVerifiedUser(username))) {
+    ctx.reply(
+      "You need to verify with zupass first! Use /start in a DM to get started"
+    );
     return;
   }
   // Parse and pass input
@@ -204,13 +212,15 @@ bot.command("balance", async (ctx) => {
   // Parse and pass username
   const username = ctx.from?.username?.toString();
   if (!username) {
-    console.log('Missing username: ', ctx);
+    console.log("Missing username: ", ctx);
     ctx.reply("No username");
     return;
   }
 
-  if(!await isVerifiedUser(username)) {
-    ctx.reply('You need to verify with zupass first! Use /start in a DM to get started');
+  if (!(await isVerifiedUser(username))) {
+    ctx.reply(
+      "You need to verify with zupass first! Use /start in a DM to get started"
+    );
     return;
   }
 
@@ -254,13 +264,15 @@ bot.command("generate", async (ctx) => {
   // Parse and pass username
   const username = ctx.from?.username?.toString();
   if (!username) {
-    console.log('Missing username: ', ctx);
+    console.log("Missing username: ", ctx);
     ctx.reply("No username");
     return;
   }
 
-  if(!await isVerifiedUser(username)) {
-    ctx.reply('You need to verify with zupass first! Use /start in a DM to get started');
+  if (!(await isVerifiedUser(username))) {
+    ctx.reply(
+      "You need to verify with zupass first! Use /start in a DM to get started"
+    );
     return;
   }
 

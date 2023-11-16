@@ -319,5 +319,5 @@ bot.command("help", async (ctx) => {
     | /sell   | Sell <quantity> <fruit> eg. /sell 1 apple (qty can be max)|
   `
 
-  ctx.reply(helpText, { parse_mode: 'HTML'});
+  ctx.reply(`<pre>${helpText}</pre>`, { parse_mode: 'HTML'});
 });

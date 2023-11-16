@@ -13,6 +13,7 @@ export default async function setup() {
     { command: "prices", description: "Get fruit prices" },
     { command: "buy", description: "Buy <number> <fruit>" },
     { command: "sell", description: "Sell <number> <fruit>" },
+    { command: "help", description: "Show help" },
     //    { contractName: "AvocadoToken", name: "Avocado", emoji: "🥑" },
     //  { contractName: "BananaToken", name: "Banana", emoji: "🍌" },
     //  { contractName: "TomatoToken", name: "Tomato", emoji: "🍅" },

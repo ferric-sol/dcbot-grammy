@@ -101,7 +101,18 @@ export default async function sell(
   console.log("price:", price);
 
   // Use `price` to calculate min value out
-  const salt = (parseInt(fruit) * parseInt(price)) / 1e18;
+  // assetToCredit(fruit in, credits out)
+  //
+  const salt =
+    parseInt(
+      await client.readContract({
+        address: tokenContract.address,
+        abi: tokenContract.abi,
+        functionName: "assetInPrice",
+        args: [fruit],
+      })
+    ) * 0.95;
+  //const salt = (parseInt(fruit) * parseInt(price)) / 1e18;
   console.log("parsed price:", parseInt(price));
   console.log("parsed ether:", fruit);
   console.log("salt:", salt);
@@ -138,7 +149,7 @@ export default async function sell(
       address: fruitContract.address,
       abi: fruitContract.abi,
       functionName: "approve",
-      args: [tokenContract.address, fruit - allowance],
+      args: [tokenContract.address, 1e50],
     });
     const transaction = await client.waitForTransactionReceipt({
       hash: approveTx,

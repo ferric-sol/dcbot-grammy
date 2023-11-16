@@ -11,6 +11,7 @@ import getPrice from "./commands/price";
 import buy from "./commands/buy";
 import sell from "./commands/sell";
 import { zupass_menu, handle_zuconnect } from "./commands/start";
+import { verify } from "@pcd/zk-eddsa-event-ticket-pcd";
 
 const token = process.env.TELEGRAM_API_KEY;
 if (!token) throw new Error("BOT_TOKEN is unset");
@@ -59,6 +60,11 @@ const getKeyPair = async (username: string): Promise<KeyPair | null> => {
   console.log(`keyPair: ${JSON.stringify(keyPair)}`);
   return keyPair as KeyPair;
 };
+
+const isVerifiedUser = async (username: string): boolean => {
+  const verified_user =  await kv.get(`verified_user:${username}`);
+  return verified_user ? true : false;
+}
 
 const menu = zupass_menu();
 bot.use(menu);
@@ -119,7 +125,13 @@ bot.command("buy", async (ctx) => {
   // Parse and pass username
   const username = ctx.from?.username?.toString();
   if (!username) {
+    console.log('Missing username: ', ctx);
     ctx.reply("No username");
+    return;
+  }
+
+  if(!isVerifiedUser(username)) {
+    ctx.reply('You need to verify with zupass first! Use /start in a DM to get started');
     return;
   }
 
@@ -153,7 +165,13 @@ bot.command("sell", async (ctx) => {
   // Parse and pass username
   const username = ctx.from?.username?.toString();
   if (!username) {
+    console.log('Missing username: ', ctx);
     ctx.reply("No username");
+    return;
+  }
+
+  if(!isVerifiedUser(username)) {
+    ctx.reply('You need to verify with zupass first! Use /start in a DM to get started');
     return;
   }
   // Parse and pass input
@@ -183,9 +201,21 @@ bot.command("sell", async (ctx) => {
 
 // Returns the user's balance in SALT
 bot.command("balance", async (ctx) => {
-  const keyPair = ctx.from?.username
-    ? await getKeyPair(ctx.from?.username?.toString())
-    : null;
+  // Parse and pass username
+  const username = ctx.from?.username?.toString();
+  if (!username) {
+    console.log('Missing username: ', ctx);
+    ctx.reply("No username");
+    return;
+  }
+
+  if(!isVerifiedUser(username)) {
+    ctx.reply('You need to verify with zupass first! Use /start in a DM to get started');
+    return;
+  }
+
+  const keyPair = await getKeyPair(ctx.from?.username?.toString());
+
   if (keyPair?.address) {
     console.log("addr:", keyPair?.address);
     const balances = await getBalance(keyPair?.address);
@@ -222,9 +252,16 @@ bot.command("balance", async (ctx) => {
 // Private key is stored in kv store db
 bot.command("generate", async (ctx) => {
   console.log("from:", ctx.from);
+  // Parse and pass username
   const username = ctx.from?.username?.toString();
   if (!username) {
+    console.log('Missing username: ', ctx);
     ctx.reply("No username");
+    return;
+  }
+
+  if(!isVerifiedUser(username)) {
+    ctx.reply('You need to verify with zupass first! Use /start in a DM to get started');
     return;
   }
 

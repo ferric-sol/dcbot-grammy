@@ -70,7 +70,11 @@ const menu = zupass_menu();
 bot.use(menu);
 // Command to start the bot
 bot.command("start", async (ctx) => {
-  handle_zuconnect(ctx, bot, menu);
+  console.log(ctx);
+  console.log("chat:", ctx.chat);
+  console.log("from:", ctx.from);
+  console.log("entities:", ctx.entities);
+  //handle_zuconnect(ctx, bot, menu);
 });
 // Zupass command with ZK proof
 // Commented out code was moved to `./commands/zupass.ts`

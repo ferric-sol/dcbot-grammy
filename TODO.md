@@ -1,6 +1,4 @@
 1. /leaderboard
-1. Add telegram messages to tell the user what it's doing on buy/sell
-1. catch unverified users trying to use commands
 1. catch typo/invalid commands
 1. rename fruit bot repo
 1. update bot and protect the env variable
@@ -8,6 +6,8 @@
 
 Completed
 
+1. catch unverified users trying to use commands -- done
+1. Add telegram messages to tell the user what it's doing on buy/sell -- done
 1. fix buy amount being slightly off -- done
 1. /balnace should return all token balances (credit and fruit) -- done
 1. fractional buying allowed or not - yes

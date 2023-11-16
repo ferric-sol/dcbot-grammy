@@ -1,5 +1,5 @@
 1. /leaderboard
-1. Add telegram messages to tell the user what it's doing on buy/sell
+1. Add telegram messages to tell the user what it's doing on buy/sell -- done
 1. catch unverified users trying to use commands
 1. catch typo/invalid commands
 1. rename fruit bot repo

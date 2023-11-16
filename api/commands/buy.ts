@@ -1,6 +1,7 @@
 import { privateKeyToAccount } from "viem/accounts";
 import {
   createWalletClient,
+  walletClient,
   http,
   publicActions,
   parseEther,
@@ -14,38 +15,23 @@ import gnosisLink from "../gnosis";
 import formatEtherTg from "../../utils/format";
 import { Context } from "grammy";
 
-// Before the function can be executed, we need to connect to the user's wallet
-
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// Initialize kv database
-const kv = createClient({
-  url: process.env.KV_REST_API_URL,
-  token: process.env.KV_REST_API_TOKEN,
-});
-
-// This function allows users to buy a Fruit token using SALT
-// 1. view token price in terms of SALT
-// 2. swap SALT for fruit token using price to calculate min value out
-export default async function buy(
-  tokenName: string,
-  amount: number,
-  username: string,
-  ctx: Context
-) {
+// Initialize user
+const Initialize = async (username: string) => {
+  // Initialize kv database
+  const kv = createClient({
+    url: process.env.KV_REST_API_URL,
+    token: process.env.KV_REST_API_TOKEN,
+  });
   // Connect to the user's wallet
   const keys = await kv.get(`user:${username}`);
   console.log("keys: ", keys);
   console.log("username: ", username);
-
   if (!keys.privateKey) {
     return "User not found";
   }
 
+  // Connect to the user's wallet
   const account = privateKeyToAccount(keys.privateKey);
-  const dexContractName: string = `BasicDex${tokenName}`;
-  console.log("dexContractName:", dexContractName);
-
   // Initialize the viem client using the user's private key in kv db
   const client = createWalletClient({
     account,
@@ -53,7 +39,13 @@ export default async function buy(
     transport: gnosisLink(),
     // transport: http(process.env.GNOSIS_URL),
   }).extend(publicActions);
+  return client;
+};
 
+// Set up contracts and approve prior to swap
+const SetUpSwap = async (tokenName: string, client: walletClient) => {
+  const dexContractName: string = `BasicDex${tokenName}`;
+  console.log("dexContractName:", dexContractName);
   // Connect contract objects to variables
   // TODO: TSify this using types from
   // https://github.com/BuidlGuidl/event-wallet/blob/08790b0d8f070b22625b1fadcd312988a70be825/packages/nextjs/utils/scaffold-eth/contract.ts#L7
@@ -136,11 +128,12 @@ export default async function buy(
   if (salt > allowance) {
     await ctx.reply("Approving Transaction...");
     // Approve the FRUIT contract to `transferFrom()` your SALT
-    console.log(
-      `Approving ${tokenName} Dex for ${
-        (tokenContract.address, parseInt(salt) - parseInt(allowance))
-      } SALT`
-    );
+    // This console log is outdated since we have decided to approve a huge amount as opposed to only what is needed
+    // console.log(
+    //   `Approving ${tokenName} Dex for ${
+    //     (tokenContract.address, parseInt(salt) - parseInt(allowance))
+    //   } SALT`
+    // );
     const approveTx = await client.writeContract({
       address: saltContract.address,
       abi: saltContract.abi,
@@ -154,7 +147,11 @@ export default async function buy(
 
     await ctx.reply("✅ Transaction Approved!");
   }
+  return { address: tokenContract.address, abi: tokenContract.abi };
+};
 
+// Perform Swap
+const Swap = async (address: string, abi: string, client: walletClient) => {
   try {
     await ctx.reply("Swapping assets...");
     // Simulate the transaction before actually sending it
@@ -207,4 +204,20 @@ export default async function buy(
     console.log("error:", error.message);
     return error.message;
   }
+};
+
+// This function allows users to buy a Fruit token using SALT
+export default async function buy(
+  tokenName: string,
+  amount: number,
+  username: string,
+  ctx: Context
+) {
+  console.log("TEST LOG");
+  // Get client object
+  const client = await Initialize(username);
+  // Set up swap
+  const dex = await SetUpSwap(tokenName, client);
+  // Perform the swap
+  await Swap(dex.address, dex.abi, client);
 }

@@ -12,11 +12,11 @@ import { contracts } from "../contracts";
 import { createClient } from "@vercel/kv";
 import gnosisLink from "../gnosis";
 import formatEtherTg from "../../utils/format";
-import { Context } from "grammy";
+import { Context, Bot, webhookCallback } from "grammy";
 
-// Before the function can be executed, we need to connect to the user's wallet
-
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const token = process.env.TELEGRAM_API_KEY;
+if (!token) throw new Error("TELEGRAM_API_KEY is unset");
+const bot = new Bot(token);
 
 // Initialize kv database
 const kv = createClient({
@@ -71,35 +71,6 @@ export default async function buy(
     return `Token "${tokenName}" not found in contracts`;
   }
 
-  // Get price of fruit token
-  const price = await client.readContract({
-    address: tokenContract.address,
-    abi: tokenContract.abi,
-    functionName: "assetInPrice",
-    args: [parseEther("1")],
-  });
-  console.log("price:", price);
-
-  // Use `price` to calculate min value out
-  // 1e18 variable * 1e18 variable means you need to divide by 1e18 afterwards
-  const salt = await client.readContract({
-    address: tokenContract.address,
-    abi: tokenContract.abi,
-    functionName: "assetOutPrice",
-    args: [parseEther(amount)],
-  });
-  // const salt =
-  //   (parseInt(parseEther(amount.toString())) * parseInt(price)) / 1e18;
-  console.log("parsed price:", parseInt(price));
-  console.log("parsed ether:", parseEther(amount.toString()));
-  console.log("salt in:", salt);
-
-  // Calculate minimum fruit token amount to receive (currently hard-coded to 95% of original value which is 5% slippage)
-  const minOut = amount * 0.95;
-  console.log("minOut:", minOut);
-  const minOutParsed = parseEther(minOut.toString());
-  console.log("minOutParsed:", minOutParsed);
-
   /** Before we do anything, we need to ensure that the user has enough SALT to buy the fruit tokens */
   const saltBalance = await client.readContract({
     address: saltContract.address,
@@ -109,11 +80,55 @@ export default async function buy(
   });
   console.log("salt balance:", saltBalance);
 
+  // Format input amount
+  let salt;
+  let minOut;
+  console.log("amount bool:", amount == "max");
+  if (amount == "all" || amount == "max") {
+    salt = saltBalance;
+    // Calculate minimum fruit token amount to receive (currently hard-coded to 95% of original value which is 5% slippage)
+    minOut =
+      parseInt(
+        await client.readContract({
+          address: tokenContract.address,
+          abi: tokenContract.abi,
+          functionName: "creditInPrice",
+          args: [saltBalance],
+        })
+      ) * 0.95;
+  } else {
+    salt = await client.readContract({
+      address: tokenContract.address,
+      abi: tokenContract.abi,
+      functionName: "assetOutPrice",
+      args: [parseEther(amount)],
+    });
+    console.log("parsed ether:", parseEther(amount.toString()));
+
+    // Calculate minimum fruit token amount to receive (currently hard-coded to 95% of original value which is 5% slippage)
+    const slippageAmount = amount * 0.95;
+    minOut = parseEther(slippageAmount.toString());
+    console.log("minOut:", minOut);
+  }
+  console.log("salt in:", salt);
+
   // If you don't have enough SALT, return a message saying so
   if (saltBalance < salt) {
     console.log("Insuffcient credit balance");
     return "Insufficient credit balance";
+  } else if (saltBalance <= 0) {
+    return "You don't have any credits, dm me `/start` for 25!";
   }
+
+  // Get price of fruit token
+  const price = await client.readContract({
+    address: tokenContract.address,
+    abi: tokenContract.abi,
+    functionName: "assetInPrice",
+    args: [parseEther("1")],
+  });
+  console.log("price:", price);
+  console.log("parsed int price:", parseInt(price));
 
   /** Right before swapping the tokens, we need to approve the DEX to take our SALT
    * Should first check allowance for desired fruit dex, then approve the difference between SALT to swap, and allowance value
@@ -134,7 +149,10 @@ export default async function buy(
   // we need to approve it to take the additional SALT
 
   if (salt > allowance) {
-    await ctx.reply("Approving Transaction...");
+    //await ctx.reply("Approving Transaction...");
+    console.log("chatId:", ctx.chat.id);
+    console.log("ctx:", ctx);
+    await bot.api.sendMessage(ctx.chat.id, "Approving Transaction...");
     // Approve the FRUIT contract to `transferFrom()` your SALT
     console.log(
       `Approving ${tokenName} Dex for ${
@@ -163,7 +181,7 @@ export default async function buy(
       address: tokenContract.address,
       abi: tokenContract.abi,
       functionName: "creditToAsset",
-      args: [salt, minOutParsed],
+      args: [salt, minOut],
     });
 
     // Send the transaction

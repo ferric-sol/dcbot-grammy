@@ -62,15 +62,22 @@ const getKeyPair = async (username: string): Promise<KeyPair | null> => {
 };
 
 const isVerifiedUser = async (username: string): Promise<boolean> => {
-  const verified_user =  await kv.get(`verified_user:${username}`);
+  const verified_user = await kv.get(`verified_user:${username}`);
   return verified_user ? true : false;
-}
+};
 
 const menu = zupass_menu();
 bot.use(menu);
 // Command to start the bot
 bot.command("start", async (ctx) => {
-  handle_zuconnect(ctx, bot, menu);
+  const memberCount = await bot.api.getChatMemberCount(ctx.chat.id);
+  if (memberCount > 2) {
+    ctx.reply(
+      "Using `/start` in a groupchat is unsupported, please DM me to run this command!"
+    );
+  } else {
+    handle_zuconnect(ctx, bot, menu);
+  }
 });
 // Zupass command with ZK proof
 // Commented out code was moved to `./commands/zupass.ts`
@@ -125,13 +132,15 @@ bot.command("buy", async (ctx) => {
   // Parse and pass username
   const username = ctx.from?.username?.toString();
   if (!username) {
-    console.log('Missing username: ', ctx);
+    console.log("Missing username: ", ctx);
     ctx.reply("No username");
     return;
   }
 
-  if(!await isVerifiedUser(username)) {
-    ctx.reply('You need to verify with zupass first! Use /start in a DM to get started');
+  if (!(await isVerifiedUser(username))) {
+    ctx.reply(
+      "You need to verify with zupass first! Use /start in a DM to get started"
+    );
     return;
   }
 
@@ -140,6 +149,10 @@ bot.command("buy", async (ctx) => {
     .replace("/buy", "")
     .replace("@DCFruitBot", "")
     .trim();
+  if (input.length <= 0) {
+    ctx.reply("No input provided!");
+    return;
+  }
   const inputSplit = input.split(" ");
   console.log("input:", input);
   console.log("inputSplit:", inputSplit);
@@ -165,13 +178,15 @@ bot.command("sell", async (ctx) => {
   // Parse and pass username
   const username = ctx.from?.username?.toString();
   if (!username) {
-    console.log('Missing username: ', ctx);
+    console.log("Missing username: ", ctx);
     ctx.reply("No username");
     return;
   }
 
-  if(!await isVerifiedUser(username)) {
-    ctx.reply('You need to verify with zupass first! Use /start in a DM to get started');
+  if (!(await isVerifiedUser(username))) {
+    ctx.reply(
+      "You need to verify with zupass first! Use /start in a DM to get started"
+    );
     return;
   }
   // Parse and pass input
@@ -204,13 +219,15 @@ bot.command("balance", async (ctx) => {
   // Parse and pass username
   const username = ctx.from?.username?.toString();
   if (!username) {
-    console.log('Missing username: ', ctx);
+    console.log("Missing username: ", ctx);
     ctx.reply("No username");
     return;
   }
 
-  if(!await isVerifiedUser(username)) {
-    ctx.reply('You need to verify with zupass first! Use /start in a DM to get started');
+  if (!(await isVerifiedUser(username))) {
+    ctx.reply(
+      "You need to verify with zupass first! Use /start in a DM to get started"
+    );
     return;
   }
 
@@ -254,13 +271,15 @@ bot.command("generate", async (ctx) => {
   // Parse and pass username
   const username = ctx.from?.username?.toString();
   if (!username) {
-    console.log('Missing username: ', ctx);
+    console.log("Missing username: ", ctx);
     ctx.reply("No username");
     return;
   }
 
-  if(!await isVerifiedUser(username)) {
-    ctx.reply('You need to verify with zupass first! Use /start in a DM to get started');
+  if (!(await isVerifiedUser(username))) {
+    ctx.reply(
+      "You need to verify with zupass first! Use /start in a DM to get started"
+    );
     return;
   }
 

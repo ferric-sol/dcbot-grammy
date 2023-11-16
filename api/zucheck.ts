@@ -16,7 +16,7 @@ const { KV_REST_API_URL, KV_REST_API_TOKEN, GNOSIS_URL, TELEGRAM_API_KEY } =
   process.env;
 
 const token = process.env.TELEGRAM_API_KEY;
-if (!token) throw new Error("BOT_TOKEN is unset");
+if (!token) throw new Error("TELEGRAM_API_KEY is unset");
 // Drip funds from the faucet to this user's address in terms of SALT (credits)
 const CREDIT_FAUCET_AMOUNT = "25";
 const XDAI_FAUCET_AMOUNT = ".03";

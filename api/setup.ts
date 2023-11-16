@@ -2,7 +2,7 @@
 import { Bot } from "grammy";
 
 const token = process.env.TELEGRAM_API_KEY;
-if (!token) throw new Error("BOT_TOKEN is unset");
+if (!token) throw new Error("TELEGRAM_API_KEY is unset");
 
 const bot = new Bot(token);
 

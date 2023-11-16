@@ -227,7 +227,7 @@ bot.command("balance", async (ctx) => {
       "  Lemon   ",
       "Strawberry",
       "  Tomato  ",
-      "  Credit   ",
+      "  Credit  ",
     ];
     const balanceArray = [];
     balanceArray.push("|   Fruit    | Balance |");

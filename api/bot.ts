@@ -70,7 +70,6 @@ const menu = zupass_menu();
 bot.use(menu);
 // Command to start the bot
 bot.command("start", async (ctx) => {
-  console.log(await bot.api.getChatMemberCount(ctx.chat.id));
   const memberCount = await bot.api.getChatMemberCount(ctx.chat.id);
   if (memberCount > 2) {
     ctx.reply(
@@ -79,9 +78,6 @@ bot.command("start", async (ctx) => {
   } else {
     handle_zuconnect(ctx, bot, menu);
   }
-  // console.log(await ctx.api.use.getChatMemberCount(ctx.chat.id));
-
-  //
 });
 // Zupass command with ZK proof
 // Commented out code was moved to `./commands/zupass.ts`

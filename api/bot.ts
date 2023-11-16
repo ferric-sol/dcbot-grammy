@@ -315,8 +315,8 @@ bot.command("help", async (ctx) => {
     | /start  | Generate a wallet and fund it to begin playing the game   |
     | /balance| Display your wallet balance                               |
     | /prices | Display fruit prices                                      |
-    | /buy    | Buy <quantity> <fruit> eg. /buy 1 apple  (qty can be max) |
-    | /sell   | Sell <quantity> <fruit> eg. /sell 1 apple (qty can be max)|
+    | /buy    | Buy \<quantity\> \<fruit\> eg\. /buy 1 apple  (qty can be max) |
+    | /sell   | Sell \<quantity\> \<fruit\> eg\. /sell 1 apple (qty can be max)|
   `
 
   ctx.reply(`<pre>${helpText}</pre>`, { parse_mode: 'HTML'});

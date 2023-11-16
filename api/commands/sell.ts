@@ -62,20 +62,29 @@ export default async function sell(
     return `Token "${tokenName}" not found in contracts`;
   }
 
+  /* Before we do anything, we need to ensure that the user has enough fruit tokens to sell the inputted amount */
+  const fruitBalance = await client.readContract({
+    address: fruitContract.address,
+    abi: fruitContract.abi,
+    functionName: "balanceOf",
+    args: [keys.address],
+  });
+  console.log("fruit balance:", fruitBalance);
+
   // Format input amount
   let fruit;
-  console.log(amount == "all");
   if (amount == "all") {
-    fruit = await client.readContract({
-      address: fruitContract.address,
-      abi: fruitContract.abi,
-      functionName: "balanceOf",
-      args: [keys.address],
-    });
+    fruit = fruitBalance;
   } else {
     fruit = parseEther(amount);
   }
   console.log("fruit:", fruit);
+
+  // If you don't have enough fruit, return a message saying so
+  if (fruitBalance < fruit || fruitBalance <= 0) {
+    console.log("Insuffcient fruit balance");
+    return "Insufficient fruit balance";
+  }
 
   // Get price of fruit token in fruit
   const price = await client.readContract({
@@ -96,21 +105,6 @@ export default async function sell(
   const minOut = salt * 0.95;
   console.log("minOut:", minOut);
   // const minOutParsed = parseEther(minOut.toString());
-
-  /* Before we do anything, we need to ensure that the user has enough fruit tokens to sell the inputted amount */
-  const fruitBalance = await client.readContract({
-    address: fruitContract.address,
-    abi: fruitContract.abi,
-    functionName: "balanceOf",
-    args: [keys.address],
-  });
-  console.log("fruit balance:", fruitBalance);
-
-  // If you don't have enough fruit, return a message saying so
-  if (fruitBalance < fruit) {
-    console.log("Insuffcient fruit balance");
-    return "Insufficient fruit balance";
-  }
 
   /**  Before swapping the tokens, we need to approve the DEX to take our fruit
 

@@ -30,7 +30,7 @@ export default async function getBalance(address: string) {
   }).extend(publicActions);
 
   const balances = [];
-  for(const tokenName of Object.keys(tokenAddresses)) {
+  for(let tokenName of Object.keys(tokenAddresses)) {
     // Call `balanceOf` on SALT contract
     let tokenAddress = tokenAddresses[tokenName];
     console.log(address);

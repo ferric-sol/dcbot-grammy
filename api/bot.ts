@@ -79,8 +79,11 @@ bot.command("start", async (ctx) => {
     handle_zuconnect(ctx, bot, menu);
   }
 });
-// Zupass command with ZK proof
-// Commented out code was moved to `./commands/zupass.ts`
+
+// Returns leaderboard for current groupchat
+bot.command("start", async (ctx, bot) => {
+  await getLeaderboard(ctx, bot);
+});
 
 // Returns the price of a fruit token
 bot.command("price", async (ctx) => {

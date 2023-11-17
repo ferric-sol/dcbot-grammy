@@ -4,6 +4,7 @@ import { createWalletClient, http, publicActions } from "viem";
 import { gnosis } from "viem/chains";
 import formatEtherTg from "../../utils/format";
 import { Context, Bot } from "grammy";
+import { createClient } from "@vercel/kv";
 
 const token = process.env.TELEGRAM_API_KEY;
 if (!token) throw new Error("TELEGRAM_API_KEY is unset");

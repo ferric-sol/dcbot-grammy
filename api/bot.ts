@@ -89,7 +89,7 @@ bot.command("price", async (ctx) => {
     .replace("@DCFruitBot", "")
     .trim();
   if (tokenName.length <= 0) {
-    ctx.reply("No input provided!");
+    ctx.reply("No input provided! Try /help for more information");
     return;
   }
   const price = tokenName ? await getPrice(tokenName) : null;
@@ -154,7 +154,7 @@ bot.command("buy", async (ctx) => {
     .replace("@DCFruitBot", "")
     .trim();
   if (input.length <= 0) {
-    ctx.reply("No input provided!");
+    ctx.reply("No input provided! Try /help for more information");
     return;
   }
   const inputSplit = input.split(" ");
@@ -199,7 +199,7 @@ bot.command("sell", async (ctx) => {
     .replace("@DCFruitBot", "")
     .trim();
   if (input.length <= 0) {
-    ctx.reply("No input provided!");
+    ctx.reply("No input provided! Try /help for more information");
     return;
   }
   const inputSplit = input.split(" ");

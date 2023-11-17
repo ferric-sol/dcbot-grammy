@@ -147,7 +147,7 @@ export async function GET(request: Request, res: Response) {
       const last_drip = (await kv.get(
         `verified_user:${telegram_username}`
       )) as number;
-      
+
       if (!process.env.FRUITBOT_FAUCET_KEY) return false;
 
       // Get the faucet EOA account
@@ -200,7 +200,6 @@ export async function GET(request: Request, res: Response) {
         }
       }
 
-
       const TEN_MINUTES_IN_MS = process.env.DRIP_TIMEOUT
         ? parseInt(process.env.DRIP_TIMEOUT)
         : 10 * 60 * 1000; // 10 minutes in milliseconds
@@ -237,7 +236,6 @@ export async function GET(request: Request, res: Response) {
         const credit_hash = await client.writeContract(request); // Wallet Action
         //console.log("hash:", hash);
 
-
         //console.log("request:", request);
 
         // Update user's last_drip timestamp
@@ -246,6 +244,19 @@ export async function GET(request: Request, res: Response) {
           chat_id,
           "You have successfully verified, we've sent you some credit tokens to play with"
         );
+        const helpText = `
+    | Command | Description                                               |
+    |---------| ----------------------------------------------------------|
+    | /start  | Generate a wallet and fund it to begin playing the game   |
+    | /balance| Display your wallet balance                               |
+    | /prices | Display fruit prices                                      |
+    | /buy    | Buy quantity fruit eg /buy 1 apple  (qty can be max)      |
+    | /sell   | Sell quantity fruit eg /sell 1 apple (qty can be max)     |
+  `;
+
+        await bot.api.sendMessage(`<pre>${helpText}</pre>`, {
+          parse_mode: "HTML",
+        });
       } else {
         console.log("last_drip is not yet 10 minutes after pcd.claim");
         await bot.api.sendMessage(

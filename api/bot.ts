@@ -194,6 +194,12 @@ bot.command("sell", async (ctx) => {
     .replace("/sell", "")
     .replace("@DCFruitBot", "")
     .trim();
+
+  if (input.length <= 0) {
+    ctx.reply("No input provided!");
+    return;
+  }
+
   const inputSplit = input.split(" ");
   console.log("input:", input);
   console.log("inputSplit:", inputSplit);

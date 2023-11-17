@@ -21,7 +21,7 @@ export default async function getLeaderboard(ctx: Context, bot: Bot) {
 
   const account = privateKeyToAccount(`0x${process.env.FRUITBOT_FAUCET_KEY}`);
 
-  console.log("chat:", bot.api.getChat(ctx.chat.id));
+  console.log("chat:", await bot.api.getChat(ctx.chat.id));
   return "test return";
 
   //   // Initialize the viem client (with faucet account ?)

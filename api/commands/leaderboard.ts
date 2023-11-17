@@ -5,7 +5,12 @@ import { gnosis } from "viem/chains";
 import formatEtherTg from "../../utils/format";
 import { Context, Bot } from "grammy";
 
-export default async function getLeaderboard(ctx: Context, bot: Bot) {
+const token = process.env.TELEGRAM_API_KEY;
+if (!token) throw new Error("TELEGRAM_API_KEY is unset");
+
+const bot = new Bot(token);
+
+export default async function getLeaderboard(ctx: Context) {
   // Get the faucet EOA account
   if (!process.env.FRUITBOT_FAUCET_KEY) return false;
 

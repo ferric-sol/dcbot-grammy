@@ -81,7 +81,7 @@ bot.command("start", async (ctx) => {
 });
 
 // Returns leaderboard for current groupchat
-bot.command("start", async (ctx, bot) => {
+bot.command("leaderboard", async (ctx, bot) => {
   await getLeaderboard(ctx, bot);
 });
 

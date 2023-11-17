@@ -84,7 +84,7 @@ async function registerUserOnLeaderboard(telegram_username) {
 
     const signature = await client.signMessage({
       user_account,
-      message
+      message: JSON.stringify(message)
     })
 
     const verified_message = JSON.stringify({ action: "user-checkin", address: user_account.address, alias: telegram_username });

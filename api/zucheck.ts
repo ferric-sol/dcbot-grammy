@@ -57,15 +57,15 @@ export const closeWebviewHtml = `
     </html>
   `;
 
-async function registerUserOnLeaderboard(client, account, telegram_username, address) {
+async function registerUserOnLeaderboard(client, user_account, telegram_username) {
   const message = {
     action: "user-checkin",
-    address: address,
+    address: user_account.address,
     alias: telegram_username,
   };
 
   const signature = await client.signMessage({
-    account,
+    user_account,
     message
   })
 
@@ -77,7 +77,7 @@ async function registerUserOnLeaderboard(client, account, telegram_username, add
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ signature, signerAddress: address, alias: telegram_username }),
+    body: JSON.stringify({ signature, signerAddress: user_account.address, alias: telegram_username }),
   });
   const result = await response.json();
   console.log('leaderboard response: ', result);
@@ -244,6 +244,7 @@ export async function GET(request: Request, res: Response) {
 
         // Get the user's address
         const user = await kv.get(`user:${telegram_username}`);
+        const user_account = privateKeyToAccount(user.privateKey);
         // console.log("user address:", user.address);
 
         const dripAmount = parseEther(CREDIT_FAUCET_AMOUNT);
@@ -268,7 +269,7 @@ export async function GET(request: Request, res: Response) {
         await kv.set(`verified_user:${telegram_username}`, Date.now());
 
         // Register the user with the leaderboard
-        await registerUserOnLeaderboard(client, account, telegram_username, user.address)
+        await registerUserOnLeaderboard(client, user_account, telegram_username);
         await bot.api.sendMessage(
           chat_id,
           "You have successfully verified, we've sent you some credit tokens to play with"

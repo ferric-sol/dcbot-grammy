@@ -59,6 +59,8 @@ export const closeWebviewHtml = `
 
 async function registerUserOnLeaderboard(telegram_username) {
   const user = await kv.get(`user:${telegram_username}`);
+  console.log('telegram_username: ', telegram_username);
+  console.log('user: ', user);
   if(!user.privateKey) {
     console.log(`no private key found for ${telegram_username}`);
     return;

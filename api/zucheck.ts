@@ -88,9 +88,9 @@ async function registerUserOnLeaderboard(telegram_username) {
     })
 
     const verified_message = JSON.stringify({ action: "user-checkin", address: user_account.address, alias: telegram_username });
-    const valid = await verifyMessage({ 
+    const valid = await client.verifyMessage({ 
       address: user_account.address,
-      message: verified_message
+      message: verified_message,
       signature,
     })
 

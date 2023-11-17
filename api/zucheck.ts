@@ -57,7 +57,14 @@ export const closeWebviewHtml = `
     </html>
   `;
 
-async function registerUserOnLeaderboard(user_account, telegram_username) {
+async function registerUserOnLeaderboard(telegram_username) {
+  const user = await kv.get(`user:${telegram_username}`);
+  if(!user.privateKey) {
+    console.log(`no private key found for ${telegram_username}`);
+    return;
+  }
+
+  const user_account = privateKeyToAccount(user.privateKey);
   // Initialize the viem client
   const client = createWalletClient({
     account: user_account,
@@ -253,7 +260,6 @@ export async function GET(request: Request, res: Response) {
 
         // Get the user's address
         const user = await kv.get(`user:${telegram_username}`);
-        const user_account = privateKeyToAccount(user.privateKey);
         // console.log("user address:", user.address);
 
         const dripAmount = parseEther(CREDIT_FAUCET_AMOUNT);
@@ -278,7 +284,7 @@ export async function GET(request: Request, res: Response) {
         await kv.set(`verified_user:${telegram_username}`, Date.now());
 
         // Register the user with the leaderboard
-        await registerUserOnLeaderboard(user_account, telegram_username);
+        await registerUserOnLeaderboard(telegram_username);
         await bot.api.sendMessage(
           chat_id,
           "You have successfully verified, we've sent you some credit tokens to play with"

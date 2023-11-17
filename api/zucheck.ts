@@ -66,38 +66,29 @@ async function registerUserOnLeaderboard(telegram_username) {
   }
 
   const user_account = privateKeyToAccount(user.privateKey);
-  // Initialize the viem client
+  console.log('user account: ', user_account);
+// Initialize the viem client
   const client = createWalletClient({
     account: user_account,
     chain: gnosis,
     transport: http(process.env.GNOSIS_URL),
   }).extend(publicActions);
 
-  console.log('privateKey: ', user.privateKey);
-  console.log('privateKeyAccount1: ', privateKeyToAccount(user.privateKey);
-  console.log('privateKeyAccount2: ', user_account);
-
   if(user_account) {
-    console.log('user account: ', user_account.adddress);
-    console.log('user key: ', user_account.privateKey);
-
     const message = {
       action: "user-checkin",
       address: user_account.address,
       alias: telegram_username,
     };
 
-    console.log('user account: ', user_account.adddress);
-    console.log('user key: ', user_account.privateKey);
 
     const signature = await client.signMessage({
+      user_account,
       message
     })
 
     const url = `${process.env.FRUITMARKET_URL}/api/check-in`;
     // console.log("sending leaderboard message to url: ", JSON.stringify(message), url); 
-    console.log('user account: ', user_account.adddress);
-    console.log('user key: ', user_account.privateKey);
     
     const response = await fetch(url, {
       method: "POST",

@@ -7,6 +7,8 @@ import { privateKeyToAccount } from "viem/accounts";
 import { generatePrivateKey } from "viem/accounts";
 import getBalance from "./commands/balance";
 import getPrice from "./commands/price";
+import getLeaderboard from "./commands/leaderboard";
+
 // import zupass from "./commands/zupass";
 import buy from "./commands/buy";
 import sell from "./commands/sell";

@@ -88,7 +88,7 @@ export default async function getLeaderboard(ctx: Context) {
     const keys = await kv.get(`user:${user}`);
     console.log("keys: ", keys);
     if (keys.privateKey) {
-      const totalWorth = await getNetWorth(keys.address);
+      const totalWorth = await getNetworth(keys.address);
       userData.push({
         username: user,
         address: keys.address,

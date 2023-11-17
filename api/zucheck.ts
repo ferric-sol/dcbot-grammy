@@ -18,7 +18,7 @@ const { KV_REST_API_URL, KV_REST_API_TOKEN, GNOSIS_URL, TELEGRAM_API_KEY } =
 const token = process.env.TELEGRAM_API_KEY;
 if (!token) throw new Error("TELEGRAM_API_KEY is unset");
 // Drip funds from the faucet to this user's address in terms of SALT (credits)
-const CREDIT_FAUCET_AMOUNT = "25";
+const CREDIT_FAUCET_AMOUNT = "1";
 const XDAI_FAUCET_AMOUNT = ".03";
 
 const bot = new Bot(token);
@@ -69,13 +69,17 @@ async function registerUserOnLeaderboard(client, account, telegram_username, add
     message
   })
 
-  const response = await fetch(`${process.env.FRUITMARKET_URL}/api/check-in`, {
+  const url = `${process.env.FRUITMARKET_URL}/api/check-in`;
+  console.log("sending leaderboard message to url: ", JSON.stringify(message), url); 
+  
+  const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ signature, signerAddress: address, alias: telegram_username }),
   });
+  console.log('leaderboard response: ', response);
 }
 
 async function verifyZKEdDSAEventTicketPCD(
@@ -122,9 +126,9 @@ const kv = createClient({
 
 // returns keypair for inputted username
 const getKeyPair = async (username: string): Promise<KeyPair | null> => {
-  console.log(`key: user:${username}`);
+  // console.log(`key: user:${username}`);
   const keyPair = await kv.get(`user:${username}`);
-  console.log(`keyPair: ${JSON.stringify(keyPair)}`);
+  // console.log(`keyPair: ${JSON.stringify(keyPair)}`);
   return keyPair as KeyPair;
 };
 
@@ -141,7 +145,7 @@ export async function GET(request: Request, res: Response) {
     let telegram_username = searchParams.has("username")
       ? searchParams.get("username")
       : undefined;
-    console.log("telegram_username: ", telegram_username, searchParams);
+    // console.log("telegram_username: ", telegram_username, searchParams);
 
     // if (!telegram_user_id || !/^-?\d+$/.test(telegram_user_id)) {
     //   throw new Error(
@@ -154,10 +158,10 @@ export async function GET(request: Request, res: Response) {
       telegram_username = undefined;
     }
 
-    console.log(
-      `[TELEGRAM] Verifying ticket for ${telegram_user_id}` +
-        (telegram_username && ` with username ${telegram_username}`)
-    );
+    // console.log(
+      // `[TELEGRAM] Verifying ticket for ${telegram_user_id}` +
+        // (telegram_username && ` with username ${telegram_username}`)
+    // );
 
     const pcd = await verifyZKEdDSAEventTicketPCD(proof ?? "");
 
@@ -193,7 +197,7 @@ export async function GET(request: Request, res: Response) {
           address: user_account.address,
           privateKey: privateKey,
         };
-        console.log("reached xdai");
+        // console.log("reached xdai");
         const message = `✅ Key pair generated successfully:\n- Address: ${keyPair.address}`;
         await bot.api.sendMessage(chat_id, message);
         const funding_message = `✅ Funding account`;
@@ -228,18 +232,18 @@ export async function GET(request: Request, res: Response) {
       // Assuming pcd.claim is a timestamp
       const claimTimestamp = parseInt(watermark);
 
-      console.log("last drip:", new Date(last_drip));
-      console.log("watermark:", new Date(claimTimestamp));
-      console.log("now:", new Date(Date.now()));
+      // console.log("last drip:", new Date(last_drip));
+      // console.log("watermark:", new Date(claimTimestamp));
+      // console.log("now:", new Date(Date.now()));
       // Check if current time is 10 minutes after claim time
       if (Date.now() - last_drip >= TEN_MINUTES_IN_MS) {
-        console.log("last_drip is 10 minutes after pcd.claim");
+        // console.log("last_drip is 10 minutes after pcd.claim");
 
         //console.log("client:", client);
 
         // Get the user's address
         const user = await kv.get(`user:${telegram_username}`);
-        console.log("user address:", user.address);
+        // console.log("user address:", user.address);
 
         const dripAmount = parseEther(CREDIT_FAUCET_AMOUNT);
 
@@ -251,7 +255,7 @@ export async function GET(request: Request, res: Response) {
           functionName: "transfer",
           args: [user.address, dripAmount],
         });
-        console.log("reached credit");
+        // console.log("reached credit");
 
         //console.log("request:", request);
         const credit_hash = await client.writeContract(request); // Wallet Action
@@ -282,7 +286,7 @@ export async function GET(request: Request, res: Response) {
           parse_mode: "HTML",
         });
       } else {
-        console.log("last_drip is not yet 10 minutes after pcd.claim");
+        // console.log("last_drip is not yet 10 minutes after pcd.claim");
         await bot.api.sendMessage(
           chat_id,
           "You are already verified, type /start to play"
@@ -290,9 +294,9 @@ export async function GET(request: Request, res: Response) {
       }
     }
 
-    console.log(
-      `[TELEGRAM] Redirecting to telegram for user id ${telegram_user_id}` +
-        (telegram_username && ` with username ${telegram_username}`)
+    // console.log(
+      // `[TELEGRAM] Redirecting to telegram for user id ${telegram_user_id}` +
+        // (telegram_username && ` with username ${telegram_username}`)
     );
     // Figure out how to close the telegram modal
     // res.set("Content-Type", "text/html");

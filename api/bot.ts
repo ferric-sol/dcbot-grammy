@@ -88,6 +88,10 @@ bot.command("price", async (ctx) => {
     .replace("/price", "")
     .replace("@DCFruitBot", "")
     .trim();
+  if (tokenName.length <= 0) {
+    ctx.reply("No input provided!");
+    return;
+  }
   const price = tokenName ? await getPrice(tokenName) : null;
   if (price) {
     ctx.reply(price);
@@ -194,6 +198,10 @@ bot.command("sell", async (ctx) => {
     .replace("/sell", "")
     .replace("@DCFruitBot", "")
     .trim();
+  if (input.length <= 0) {
+    ctx.reply("No input provided!");
+    return;
+  }
   const inputSplit = input.split(" ");
   console.log("input:", input);
   console.log("inputSplit:", inputSplit);
@@ -308,8 +316,7 @@ bot.command("generate", async (ctx) => {
 });
 
 bot.command("help", async (ctx) => {
-  const helpText = 
-  `
+  const helpText = `
     | Command | Description                                               |
     |---------| ----------------------------------------------------------|
     | /start  | Generate a wallet and fund it to begin playing the game   |
@@ -317,7 +324,7 @@ bot.command("help", async (ctx) => {
     | /prices | Display fruit prices                                      |
     | /buy    | Buy quantity fruit eg /buy 1 apple  (qty can be max)      |
     | /sell   | Sell quantity fruit eg /sell 1 apple (qty can be max)     |
-  `
+  `;
 
-  ctx.reply(`<pre>${helpText}</pre>`, { parse_mode: 'HTML'});
+  ctx.reply(`<pre>${helpText}</pre>`, { parse_mode: "HTML" });
 });

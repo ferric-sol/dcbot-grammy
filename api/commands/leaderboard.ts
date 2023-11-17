@@ -30,11 +30,12 @@ const dexAddresses = {
 
 // Gets networth for address
 const getNetworth = async (address: string) => {
+  let totalBalance;
   for (let tokenName of Object.keys(tokenAddresses)) {
     //     // Call `balanceOf` on SALT contract
     let tokenAddress = tokenAddresses[tokenName];
     let dexAddress = dexAddresses[tokenName];
-    let totalBalance;
+
     const data = await client.readContract({
       address: tokenAddress,
       abi,
@@ -55,6 +56,7 @@ const getNetworth = async (address: string) => {
     }
     //console.log("data: ", formatEtherTg(data));
   }
+  return totalBalance;
 };
 
 export default async function getLeaderboard(ctx: Context) {

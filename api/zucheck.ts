@@ -77,31 +77,33 @@ async function registerUserOnLeaderboard(telegram_username) {
   console.log('privateKeyAccount1: ', privateKeyToAccount(user.privateKey);
   console.log('privateKeyAccount2: ', user_account);
 
-  const message = {
-    action: "user-checkin",
-    address: user_account.address,
-    alias: telegram_username,
-  };
+  if(user_account) {
+    const message = {
+      action: "user-checkin",
+      address: user_account.address,
+      alias: telegram_username,
+    };
 
-  const signature = await client.signMessage({
-    user_account,
-    message
-  })
+    const signature = await client.signMessage({
+      user_account,
+      message
+    })
 
-  const url = `${process.env.FRUITMARKET_URL}/api/check-in`;
-  // console.log("sending leaderboard message to url: ", JSON.stringify(message), url); 
-  console.log('user account: ', user_account.adddress);
-  console.log('user key: ', user_account.privateKey);
-  
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ signature, signerAddress: user_account.address, alias: telegram_username }),
-  });
-  const result = await response.json();
-  console.log('leaderboard response: ', result);
+    const url = `${process.env.FRUITMARKET_URL}/api/check-in`;
+    // console.log("sending leaderboard message to url: ", JSON.stringify(message), url); 
+    console.log('user account: ', user_account.adddress);
+    console.log('user key: ', user_account.privateKey);
+    
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ signature, signerAddress: user_account.address, alias: telegram_username }),
+    });
+    const result = await response.json();
+    console.log('leaderboard response: ', result);
+  }
 }
 
 async function verifyZKEdDSAEventTicketPCD(

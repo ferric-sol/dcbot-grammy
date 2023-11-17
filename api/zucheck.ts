@@ -57,7 +57,14 @@ export const closeWebviewHtml = `
     </html>
   `;
 
-async function registerUserOnLeaderboard(client, user_account, telegram_username) {
+async function registerUserOnLeaderboard(user_account, telegram_username) {
+  // Initialize the viem client
+  const client = createWalletClient({
+    account: user_account,
+    chain: gnosis,
+    transport: http(process.env.GNOSIS_URL),
+  }).extend(publicActions);
+
   const message = {
     action: "user-checkin",
     address: user_account.address,
@@ -269,7 +276,7 @@ export async function GET(request: Request, res: Response) {
         await kv.set(`verified_user:${telegram_username}`, Date.now());
 
         // Register the user with the leaderboard
-        await registerUserOnLeaderboard(client, user_account, telegram_username);
+        await registerUserOnLeaderboard(user_account, telegram_username);
         await bot.api.sendMessage(
           chat_id,
           "You have successfully verified, we've sent you some credit tokens to play with"

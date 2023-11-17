@@ -257,6 +257,7 @@ export async function GET(request: Request, res: Response) {
         await bot.api.sendMessage(`<pre>${helpText}</pre>`, {
           parse_mode: "HTML",
         });
+        console.log("help message sent");
       } else {
         console.log("last_drip is not yet 10 minutes after pcd.claim");
         await bot.api.sendMessage(

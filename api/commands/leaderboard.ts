@@ -55,9 +55,9 @@ const getNetworth = async (address: string) => {
       args: [address],
     });
     // Add balance for salt, for fruit convert to salt then add
-    if (tokenName === "Salt") {
+    if (tokenName === "Salt" && parseInt(data) > 0) {
       totalBalance += parseInt(data);
-    } else {
+    } else if (parseInt(data) > 0) {
       console.log("dex addr:", dexAddress);
       const convertedBalance = await client.readContract({
         address: dexAddress,

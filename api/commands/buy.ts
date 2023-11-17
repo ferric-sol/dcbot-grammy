@@ -117,7 +117,7 @@ export default async function buy(
     console.log("Insuffcient credit balance");
     return "Insufficient credit balance";
   } else if (saltBalance <= 0) {
-    return "You don't have any credits, dm me `/start` for 25!";
+    return "You don't have any credits, DM me /start for 25!";
   }
 
   // Get price of fruit token

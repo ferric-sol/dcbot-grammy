@@ -77,7 +77,9 @@ async function registerUserOnLeaderboard(user_account, telegram_username) {
   })
 
   const url = `${process.env.FRUITMARKET_URL}/api/check-in`;
-  console.log("sending leaderboard message to url: ", JSON.stringify(message), url); 
+  // console.log("sending leaderboard message to url: ", JSON.stringify(message), url); 
+  console.log('user account: ', user_account.adddress);
+  console.log('user key: ', user_account.privateKey);
   
   const response = await fetch(url, {
     method: "POST",

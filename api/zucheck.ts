@@ -254,7 +254,7 @@ export async function GET(request: Request, res: Response) {
     | /sell   | Sell quantity fruit eg /sell 1 apple (qty can be max)     |
   `;
 
-        await bot.api.sendMessage(`<pre>${helpText}</pre>`, {
+        await bot.api.sendMessage(chat_id, `<pre>${helpText}</pre>`, {
           parse_mode: "HTML",
         });
         console.log("help message sent");

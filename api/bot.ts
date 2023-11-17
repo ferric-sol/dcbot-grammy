@@ -149,13 +149,21 @@ bot.command("buy", async (ctx) => {
     .replace("/buy", "")
     .replace("@DCFruitBot", "")
     .trim();
+
   if (input.length <= 0) {
-    ctx.reply("No input provided!");
+    ctx.reply("No input provided! See /help for the correct syntax");
     return;
   }
+
   const inputSplit = input.split(" ");
   console.log("input:", input);
   console.log("inputSplit:", inputSplit);
+
+  if (inputSplit.length < 2) {
+    ctx.reply("Incorrect input provided! See /help for the correct syntax");
+    return;
+  }
+
   const tokenName =
     inputSplit[1].charAt(0).toUpperCase() + inputSplit[1].slice(1);
   const buyData = input
@@ -196,13 +204,19 @@ bot.command("sell", async (ctx) => {
     .trim();
 
   if (input.length <= 0) {
-    ctx.reply("No input provided!");
+    ctx.reply("No input provided! See /help for the correct syntax");
     return;
   }
 
   const inputSplit = input.split(" ");
   console.log("input:", input);
   console.log("inputSplit:", inputSplit);
+
+  if (inputSplit.length < 2) {
+    ctx.reply("Incorrect input provided! See /help for the correct syntax");
+    return;
+  }
+
   const tokenName =
     inputSplit[1].charAt(0).toUpperCase() + inputSplit[1].slice(1);
   const sellData = input

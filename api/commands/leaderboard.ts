@@ -1,4 +1,6 @@
 import { abi } from "../../abi/xDAI";
+import { dexAbi } from "../../abi/DEX";
+
 import { privateKeyToAccount } from "viem/accounts";
 import { createWalletClient, http, publicActions } from "viem";
 import { gnosis } from "viem/chains";
@@ -56,9 +58,10 @@ const getNetworth = async (address: string) => {
     if (tokenName === "Salt") {
       totalBalance += parseInt(data);
     } else {
+      console.log("dex addr:", dexAddress);
       const convertedBalance = await client.readContract({
         address: dexAddress,
-        abi,
+        dexAbi,
         functionName: "assetInPrice",
         args: [data],
       });

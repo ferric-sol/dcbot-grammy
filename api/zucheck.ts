@@ -87,15 +87,27 @@ async function registerUserOnLeaderboard(telegram_username) {
       message
     })
 
+    const verified_message = JSON.stringify({ action: "user-checkin", address: user_account.address, alias: telegram_username });
+    const valid = await verifyMessage({ 
+      address: user_account.address,
+      message: verified_message
+      signature,
+    })
+
+    console.log('valid: ', valid);
+
     const url = `${process.env.FRUITMARKET_URL}/api/check-in`;
     // console.log("sending leaderboard message to url: ", JSON.stringify(message), url); 
-    
+
+    const body = JSON.stringify({ signature, signerAddress: user_account.address, alias: telegram_username });
+    console.log('body: ', body);
+
     const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ signature, signerAddress: user_account.address, alias: telegram_username }),
+      body
     });
     const result = await response.json();
     console.log('leaderboard response: ', result);

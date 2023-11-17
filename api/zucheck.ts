@@ -79,7 +79,8 @@ async function registerUserOnLeaderboard(client, account, telegram_username, add
     },
     body: JSON.stringify({ signature, signerAddress: address, alias: telegram_username }),
   });
-  console.log('leaderboard response: ', response);
+  const result = await response.json();
+  console.log('leaderboard response: ', result);
 }
 
 async function verifyZKEdDSAEventTicketPCD(

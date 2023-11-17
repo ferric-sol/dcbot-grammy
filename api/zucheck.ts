@@ -57,6 +57,27 @@ export const closeWebviewHtml = `
     </html>
   `;
 
+async function registerUserOnLeaderboard(client, account, telegram_username, address) {
+  const message = {
+    action: "user-checkin",
+    address: address,
+    alias: telegram_username,
+  };
+
+  const signature = await client.signMessage({
+    account,
+    message
+  })
+
+  const response = await fetch(`${process.env.FRUITMARKET_URL}/api/check-in`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ signature, signerAddress: address, alias: telegram_username }),
+  });
+}
+
 async function verifyZKEdDSAEventTicketPCD(
   serializedZKEdDSATicket: string
 ): Promise<ZKEdDSAEventTicketPCD | null> {
@@ -240,6 +261,9 @@ export async function GET(request: Request, res: Response) {
 
         // Update user's last_drip timestamp
         await kv.set(`verified_user:${telegram_username}`, Date.now());
+
+        // Register the user with the leaderboard
+        await registerUserOnLeaderboard(client, account, telegram_username, user.address)
         await bot.api.sendMessage(
           chat_id,
           "You have successfully verified, we've sent you some credit tokens to play with"

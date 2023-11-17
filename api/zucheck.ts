@@ -60,8 +60,6 @@ export const closeWebviewHtml = `
 async function registerUserOnLeaderboard(telegram_username) {
   const user = await kv.get(`user:${telegram_username}`);
   console.log('telegram_username: ', telegram_username);
-  console.log('privateKey: ', user.privateKey);
-  console.log('privateKeyAccount: ', privateKeyToAccount(user.privateKey);
   if(!user.privateKey) {
     console.log(`no private key found for ${telegram_username}`);
     return;
@@ -74,6 +72,10 @@ async function registerUserOnLeaderboard(telegram_username) {
     chain: gnosis,
     transport: http(process.env.GNOSIS_URL),
   }).extend(publicActions);
+
+  console.log('privateKey: ', user.privateKey);
+  console.log('privateKeyAccount1: ', privateKeyToAccount(user.privateKey);
+  console.log('privateKeyAccount2: ', user_account);
 
   const message = {
     action: "user-checkin",

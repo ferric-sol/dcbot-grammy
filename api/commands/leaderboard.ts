@@ -29,6 +29,15 @@ const dexAddresses = {
   Tomato: "0xf68FaCB8b9386b78842372A9d7d81Ff8CFE605Bb",
 };
 
+const account = privateKeyToAccount(`0x${process.env.FRUITBOT_FAUCET_KEY}`);
+
+//   // Initialize the viem client (with faucet account ?)
+const client = createWalletClient({
+  account,
+  chain: gnosis,
+  transport: http(process.env.GNOSIS_URL),
+}).extend(publicActions);
+
 // Gets networth for address
 const getNetworth = async (address: string) => {
   let totalBalance;
@@ -70,8 +79,6 @@ export default async function getLeaderboard(ctx: Context) {
     token: process.env.KV_REST_API_TOKEN,
   });
 
-  const account = privateKeyToAccount(`0x${process.env.FRUITBOT_FAUCET_KEY}`);
-
   console.log("chat:", await bot.api.getChat(ctx.chat.id));
   const chat = await bot.api.getChat(ctx.chat.id);
   const users = chat.active_usernames;
@@ -100,13 +107,6 @@ export default async function getLeaderboard(ctx: Context) {
 
   //   if (formatEtherTg(data) !== "0.0000")
   //     balances[tokenName] = formatEtherTg(data);
-
-  //   // Initialize the viem client (with faucet account ?)
-  //   const client = createWalletClient({
-  //     account,
-  //     chain: gnosis,
-  //     transport: http(process.env.GNOSIS_URL),
-  //   }).extend(publicActions);
 
   //   const balances = [];
   //   for (let tokenName of Object.keys(tokenAddresses)) {

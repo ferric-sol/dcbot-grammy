@@ -83,8 +83,8 @@ export default async function buy(
   // Format input amount
   let salt;
   let minOut;
-  console.log("amount bool:", amount.toLowercase() === "max");
-  if (amount.toLowercase() === "all" || amount.toLowercase() === "max") {
+  console.log("amount bool:", amount.toLowerCase() === "max");
+  if (amount.toLowerCase() === "all" || amount.toLowerCase() === "max") {
     salt = saltBalance;
     // Calculate minimum fruit token amount to receive (currently hard-coded to 95% of original value which is 5% slippage)
     minOut =

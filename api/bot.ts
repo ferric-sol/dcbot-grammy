@@ -78,8 +78,9 @@ bot.command("start", async (ctx) => {
   console.log('ctx: ', JSON.stringify(ctx);
   if(ctx.chat.type === 'channel_post' || ctx.chat.type === 'supergroup') {
     ctx.reply(
-      "Using `/start` in a groupchat is unsupported, please DM me to run this command!"
-    );
+      "Using `/start` in a groupchat is unsupported, please DM me to run this command!", {
+      reply_markup: { force_reply: true },
+      });
   } else {
     handle_zuconnect(ctx, bot, menu);
   }

@@ -75,7 +75,7 @@ bot.command("start", async (ctx) => {
   // const memberCount = await bot.api.getChatMemberCount(ctx.chat.id);
   // if (memberCount > 2) {
   console.log('type: ', ctx.chat.type);
-  if(ctx.chat.type === 'channel_post') {
+  if(ctx.chat.type === 'channel_post' || ctx.chat.type === 'supergroup') {
     ctx.reply(
       "Using `/start` in a groupchat is unsupported, please DM me to run this command!"
     );

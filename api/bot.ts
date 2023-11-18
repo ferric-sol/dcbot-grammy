@@ -77,6 +77,7 @@ bot.command("start", async (ctx) => {
   console.log('type: ', ctx.chat.type);
   console.log('ctx: ', JSON.stringify(ctx);
   if(ctx.chat.type === 'channel_post' || ctx.chat.type === 'supergroup') {
+    bot.api.sendMessage(ctx.from.message.id, "Using `/start` in a groupchat is unsupported, please DM me to run this command!");
     ctx.reply(
       "Using `/start` in a groupchat is unsupported, please DM me to run this command!", {
       reply_markup: { force_reply: true },

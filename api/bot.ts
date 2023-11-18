@@ -81,6 +81,7 @@ bot.command("start", async (ctx) => {
     ctx.reply(
       "Using `/start` in a groupchat is unsupported, please DM me to run this command!", {
       reply_markup: { force_reply: true },
+      message_thread_id: '4189' // Fruit thread
       });
   } else {
     handle_zuconnect(ctx, bot, menu);

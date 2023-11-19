@@ -77,7 +77,6 @@ bot.command("start", async (ctx) => {
   if(ctx.chat.type.trim().match(/^(channel|supergroup|group)$/)) {
     ctx.reply(
       "Using `/start` in a groupchat is unsupported, please DM me to run this command!", {
-      // reply_markup: { force_reply: true },
       message_thread_id: ctx.message && ctx.message.message_thread_id ? ctx.message.message_thread_id : null
       });
   } else {
@@ -135,6 +134,7 @@ bot.command("prices", async (ctx) => {
   }
   // await ctx.reply(`\`\`\`\n${priceArray.join('\n')}\`\`\``, { parse_mode: 'MarkdownV2'});
   await ctx.reply(`<pre>\n${priceArray.join("\n")}</pre>`, {
+    message_thread_id: ctx.message && ctx.message.message_thread_id ? ctx.message.message_thread_id : null,
     parse_mode: "HTML",
   });
 });
@@ -288,6 +288,7 @@ bot.command("balance", async (ctx) => {
       } else console.log(`Balance not found for ${fruit.trim()}`);
     }
     await ctx.reply(`<pre>\n${balanceArray.join("\n")}</pre>`, {
+      message_thread_id: ctx.message && ctx.message.message_thread_id ? ctx.message.message_thread_id : null,
       parse_mode: "HTML",
     });
   }

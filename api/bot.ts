@@ -74,14 +74,13 @@ bot.use(menu);
 bot.command("start", async (ctx) => {
   // const memberCount = await bot.api.getChatMemberCount(ctx.chat.id);
   // if (memberCount > 2) {
-  console.log('type: ', ctx.chat.type);
-  console.log('ctx: ', JSON.stringify(ctx));
-  if(ctx.chat.type === 'channel_post' || ctx.chat.type === 'supergroup') {
-    bot.api.sendMessage(ctx.update.channel_post.chat.id, "Using `/start` in a groupchat is unsupported, please DM me to run this command!");
+  if(ctx.chat.type.trim().match(/^(channel|supergroup|group)$/)) {
+    const message_options =  ctx.chat && ctx.chat.type === 'supergroup' ? { message_thread_id: ctx.message.message_thread_id } : null;
+    // bot.api.sendMessage(ctx.chat.id, "Using `/start` in a groupchat is unsupported, please DM me to run this command!", message_options);
     ctx.reply(
       "Using `/start` in a groupchat is unsupported, please DM me to run this command!", {
-      reply_markup: { force_reply: true },
-      message_thread_id: 4189 // Fruit thread
+      // reply_markup: { force_reply: true },
+      message_thread_id: ctx.message && ctx.message.message_thread_id ? ctx.message.message_thread_id : null
       });
   } else {
     handle_zuconnect(ctx, bot, menu);
